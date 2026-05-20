@@ -1,0 +1,29 @@
+[
+  {
+    "id": "ret_001",
+    "title": "Weekly Liquidity Position",
+    "frequency": "Weekly",
+    "due_date": "2026-05-08",
+    "status": "Pending",
+    "owner_dept": "PLAN",
+    "created_at": "2026-05-01T10:00:00"
+  },
+  {
+    "id": "ret_002",
+    "title": "Monthly MSME Achievement",
+    "frequency": "Monthly",
+    "due_date": "2026-05-05",
+    "status": "Completed",
+    "owner_dept": "ADVANCES",
+    "created_at": "2026-04-30T14:20:00"
+  },
+  {
+    "id": "ret_003",
+    "title": "DICGC",
+    "frequency": "Half-Yearly",
+    "due_date": "2026-05-09",
+    "status": "Pending",
+    "owner_dept": "ALL",
+    "created_at": "2026-05-02T02:16:51.532581"
+  }
+]

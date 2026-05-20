@@ -1,0 +1,50 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<div class="doc-header" style="text-align: right; margin-bottom: 20px;">
+    <div>Date: {{ date }}</div>
+</div>
+
+<div class="doc-title" style="text-align: center; margin-bottom: 30px;">
+    <h3 style="color: #00338d; text-decoration: underline; text-transform: uppercase;">
+        HEARTY CONGRATULATIONS ON THE {{ anniversary_year }}th ANNIVERSARY – {{ branch_name }} ({{ branch_code }})
+    </h3>
+</div>
+
+<div class="letter-body" style="font-size: 15px; line-height: 1.6; color: #1e293b;">
+    <p>We are extremely pleased to note that <b>{{ branch_name }} ({{ branch_code }})</b> is celebrating its <b>{{ anniversary_year }}th Anniversary</b> on <b>{{ foundation_date or date }}</b>.</p>
+    
+    <p>On this momentous occasion, the Regional Office conveys its heartiest congratulations and best wishes to the Branch Manager and all staff members of the branch. This milestone is a testament to the dedicated service rendered by the branch to our valued customers and the significant contribution made towards the growth of our Institution.</p>
+    
+    <p>To celebrate this achievement and to further strengthen our presence, the Regional Office is pleased to announce a <b>“Special Anniversary Fortnight Campaign”</b> at your branch. The campaign shall be observed for a period of 15 days (7 days prior to and 7 days after the foundation day).</p>
+    
+    <p><b>Campaign Objectives:</b></p>
+    <ul style="margin-left: 20px;">
+        <li>Mobilization of CASA and Term Deposits.</li>
+        <li>Aggressive sourcing of Retail and MSME Loans.</li>
+        <li>Special focus on Recovery and NPA reduction.</li>
+        <li>Organizing Customer Outreach programs and SHG meetings.</li>
+    </ul>
+
+    <p>We are confident that the entire team at {{ branch_name }} will utilize this celebratory period to scale new heights in business development and customer service. Let this anniversary be a springboard for even greater accomplishments in the current financial year.</p>
+    
+    <p>Wishing the team all the very best for the celebrations and the campaign.</p>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="footer" style="margin-top: 50px;">
+    <div class="signatories-row" style="display: flex; justify-content: space-between;">
+        <div class="signatory-col">
+            <div class="signature-space" style="height: 60px;"></div>
+            <div class="sig-name-en"><b>({{ prepared_by or 'Regional Office' }})</b></div>
+            <div class="sig-trilingual">Planning Department</div>
+        </div>
+        <div class="signatory-col" style="text-align: right;">
+            <div class="signature-space" style="height: 60px;">Sd/-</div>
+            <div class="sig-name-en"><b>REGIONAL MANAGER</b></div>
+            <div class="sig-trilingual">Regional Office, Dindigul</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

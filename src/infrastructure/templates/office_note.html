@@ -1,0 +1,72 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<div class="doc-title">
+    <h2 class="main-title">OFFICE NOTE / कार्यालय टिप्पणी</h2>
+</div>
+
+<div class="letter-body">
+    <div class="section-title">SUBJECT: {{ subject }}</div>
+    
+    <div class="section-title">1. Introduction</div>
+    <div class="rich-content {{ 'pre-wrap' if not is_html else '' }}" style="margin-bottom: 20px;">
+        {{ intro_text | safe }}
+    </div>
+
+    <div class="section-title">2. Observations</div>
+    <div class="rich-content {{ 'pre-wrap' if not is_html else '' }}" style="margin-bottom: 20px;">
+        {{ observations | safe }}
+    </div>
+
+    <div class="section-title">3. Recommendations</div>
+    <div class="rich-content {{ 'pre-wrap' if not is_html else '' }}" style="margin-bottom: 40px;">
+        {{ recommendations | safe }}
+    </div>
+
+    <!-- Trilingual Multi-Row Signatory Section -->
+    <div class="sig-section" style="margin-top: 60px; border-top: 1px solid #f0f0f0; padding-top: 20px; page-break-inside: avoid;">
+        
+        <!-- Row 1: Initiator (Left Aligned) -->
+        <div style="margin-bottom: 40px; display: flex; justify-content: flex-start; page-break-inside: avoid;">
+            <div style="text-align: center; width: 30%; page-break-inside: avoid;">
+                <div style="font-size: 10px; line-height: 1.35; margin-bottom: 3px;">
+                    <div class="office-label-ta">{{ initiator.name_ta }}</div>
+                    <div class="office-label-hi">{{ initiator.name_hi }}</div>
+                    <strong>{{ initiator.name }}</strong>
+                </div>
+                <div style="font-size: 8.5px; line-height: 1.3; color: #444;">
+                    <div class="office-label-ta">{{ initiator.desig_ta }}</div>
+                    <div class="office-label-hi">{{ initiator.desig_hi }}</div>
+                    <div style="text-transform: uppercase;">{{ initiator.desig_en }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2: Executives (Up to 3 in a Row, Centered) -->
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px; page-break-inside: avoid;">
+            {% for sig in signatory_list %}
+            <div style="text-align: center; width: 30%; margin-bottom: 30px; page-break-inside: avoid;">
+                <div style="font-size: 10px; line-height: 1.35; margin-bottom: 3px;">
+                    <div class="office-label-ta">{{ sig.name_ta }}</div>
+                    <div class="office-label-hi">{{ sig.name_hi }}</div>
+                    <strong>{{ sig.name }}</strong>
+                </div>
+                <div style="font-size: 8.5px; line-height: 1.3; color: #444;">
+                    <div class="office-label-ta">{{ sig.desig_ta }}</div>
+                    <div class="office-label-hi">{{ sig.desig_hi }}</div>
+                    <div style="text-transform: uppercase;">{{ sig.desig_en }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Spacer to maintain 3-column alignment for fewer items -->
+            {% if signatory_list|length == 1 %}
+                <div style="width: 30%;"></div><div style="width: 30%;"></div>
+            {% elif signatory_list|length == 2 %}
+                <div style="width: 30%;"></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

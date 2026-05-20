@@ -1,0 +1,29 @@
+{
+  "executive": {
+    "name": "Royal Executive",
+    "background": "background.png",
+    "decoration": "decoration.png",
+    "primary_color": "#D4AF37",
+    "secondary_color": "#FFFFFF",
+    "font_heading": "GoogleSans-Bold.ttf",
+    "font_body": "GoogleSans-Regular.ttf"
+  },
+  "modern": {
+    "name": "Modern Corporate",
+    "background": "background.png",
+    "decoration": "decoration.png",
+    "primary_color": "#00E5FF",
+    "secondary_color": "#FFFFFF",
+    "font_heading": "SegoeUI-Bold.ttf",
+    "font_body": "SegoeUI-Regular.ttf"
+  },
+  "traditional": {
+    "name": "Tamil Traditional",
+    "background": "background.png",
+    "decoration": "decoration.png",
+    "primary_color": "#FFD700",
+    "secondary_color": "#FFFFFF",
+    "font_heading": "NotoSansTamil-Bold.ttf",
+    "font_body": "NotoSansTamil-Regular.ttf"
+  }
+}

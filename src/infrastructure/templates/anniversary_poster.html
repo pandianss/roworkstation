@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&family=Playfair+Display:ital,wght@0,900;1,900&display=swap');
+
+        :root {
+            --gold-light: #fef3c7;
+            --gold-main: #d4af37;
+            --gold-dark: #92400e;
+            --midnight: #020617;
+            --royal: #1e3a8a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        #poster-export-area {
+            width: 1080px;
+            height: 1920px;
+            background-color: var(--midnight);
+            background-image: 
+                radial-gradient(circle at 50% 50%, #1e3a8a 0%, transparent 80%),
+                url('https://www.transparenttextures.com/patterns/dark-matter.png');
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+
+        /* 🎆 SVG Fireworks */
+        .decoration-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .firework-svg {
+            width: 100%; height: 100%;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 120px 80px;
+            box-sizing: border-box;
+            text-align: center;
+            /* Prevent any child from bleeding outside */
+            overflow: hidden;
+        }
+
+        /* 🏦 Logo */
+        .logo-container {
+            margin-bottom: 80px;
+            filter: drop-shadow(0 0 30px rgba(255,255,255,0.4));
+        }
+
+        .bank-logo {
+            max-width: 450px;
+            max-height: 220px;
+            object-fit: contain;
+        }
+
+        .pre-title {
+            font-size: 36px;
+            font-weight: 300;
+            text-transform: uppercase;
+            /* Reduced letter-spacing so "HEARTY CONGRATULATIONS" doesn't overflow */
+            letter-spacing: 0.3em;
+            color: var(--gold-light);
+            margin-bottom: 16px;
+            opacity: 0.9;
+            /* Safety: shrink to fit if needed */
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            /* FIX: Was 160px — Playfair italic is very wide.
+               At 100px, "ANNIVERSARY" (~11 chars) fits in 920px content area. */
+            font-size: 100px;
+            font-weight: 900;
+            font-style: italic;
+            margin: 0;
+            color: #fff;
+            line-height: 1;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            white-space: nowrap;
+            /* JS will scale this down further if still too wide */
+        }
+
+        /* 🏆 Milestone Ornament */
+        .milestone-ornament {
+            position: relative;
+            width: 700px;
+            height: 700px;
+            margin: 60px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .ornament-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+        }
+
+        .ornament-ring-inner {
+            position: absolute;
+            width: 90%; height: 90%;
+            border: 15px double var(--gold-main);
+            border-radius: 50%;
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.2);
+        }
+
+        .milestone-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .milestone-number {
+            font-size: 340px;
+            font-weight: 900;
+            line-height: 0.85;
+            color: var(--gold-main);
+            margin: 0;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
+        }
+
+        .milestone-suffix {
+            font-size: 68px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            color: #fff;
+            margin-top: 10px;
+        }
+
+        /* 📍 Branch Details */
+        .footer-section {
+            margin-top: auto;
+            margin-bottom: 50px;
+            /* Prevent footer from pushing content outside poster */
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .branch-header {
+            /* FIX: Was clamp(60px,110px,10vw) — computed to ~108px which is far too
+               large for long names. Start at 85px; JS auto-fit reduces it to fit. */
+            font-size: 85px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            display: block;
+            /* JS will set transform-origin and scale if needed */
+            transform-origin: center top;
+        }
+
+        .metadata-pill {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 18px 70px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 42px;
+            font-weight: 600;
+            color: var(--gold-main);
+            margin-bottom: 35px;
+            white-space: nowrap;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .date-string {
+            font-size: 38px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+        }
+
+        /* 📥 Export Button */
+        .export-btn-ui {
+            margin: 50px;
+            padding: 25px 90px;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: #fff;
+            border-radius: 100px;
+            font-size: 28px;
+            font-weight: 900;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        .export-btn-ui:hover { transform: translateY(-5px); }
+
+    </style>
+</head>
+<body>
+
+    <div id="poster-export-area">
+        <!-- 🎇 SVG Fireworks -->
+        <div class="decoration-layer">
+            <svg class="firework-svg" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="spark-grad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#fff" />
+                        <stop offset="100%" stop-color="transparent" />
+                    </radialGradient>
+                </defs>
+                
+                <!-- Large Gold Burst Top Left -->
+                <g transform="translate(200, 400)">
+                    <circle cx="0" cy="0" r="15" fill="#fbbf24" opacity="0.8" />
+                    <g stroke="#fbbf24" stroke-width="3" stroke-linecap="round">
+                        <line x1="0" y1="-20" x2="0" y2="-200" opacity="0.2" />
+                        <line x1="14" y1="-14" x2="140" y2="-140" opacity="0.3" />
+                        <line x1="20" y1="0" x2="200" y2="0" opacity="0.2" />
+                        <circle cx="0" cy="-210" r="8" fill="url(#spark-grad)" />
+                        <circle cx="150" cy="-150" r="8" fill="url(#spark-grad)" />
+                    </g>
+                    <g stroke="#ec4899" stroke-width="2" stroke-dasharray="10 5">
+                        <line x1="0" y1="-10" x2="0" y2="-150" />
+                        <line x1="7" y1="-7" x2="100" y2="-100" />
+                    </g>
+                </g>
+
+                <!-- Large Cyan Burst Mid Right -->
+                <g transform="translate(900, 800) scale(1.2)">
+                    <g stroke="#06b6d4" stroke-width="2" opacity="0.4">
+                        <line x1="0" y1="-20" x2="0" y2="-180" />
+                        <line x1="14" y1="-14" x2="130" y2="-130" />
+                        <line x1="20" y1="0" x2="180" y2="0" />
+                        <circle cx="140" cy="-140" r="6" fill="#fff" />
+                    </g>
+                </g>
+
+                <!-- Golden Dust Bottom -->
+                <g transform="translate(540, 1800)">
+                    <circle cx="-300" cy="-50" r="4" fill="#fbbf24" opacity="0.3" />
+                    <circle cx="300" cy="-100" r="3" fill="#fbbf24" opacity="0.2" />
+                    <circle cx="100" cy="-200" r="5" fill="#fbbf24" opacity="0.4" />
+                </g>
+            </svg>
+        </div>
+
+        <div class="container">
+            <div class="logo-container">
+                <img src="{{ logo_url }}" alt="Bank Logo" class="bank-logo">
+            </div>
+
+            <div class="pre-title">Hearty Congratulations</div>
+            <div class="main-title">ANNIVERSARY</div>
+
+            <div class="milestone-ornament">
+                <div class="ornament-ring"></div>
+                <div class="ornament-ring-inner"></div>
+                <div class="milestone-content">
+                    <div class="milestone-number">{{ years }}</div>
+                    <div class="milestone-suffix">Years</div>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <div class="branch-header">{{ branch_name }}</div>
+                <div class="metadata-pill">{{ region_name }}</div>
+                <div class="date-string">Opened on {{ open_date }}</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="export-btn-ui" onclick="doExport()">📥 DOWNLOAD AS IMAGE (PNG)</button>
+
+    <script>
+        // ─── Auto-fit: shrink text until it fits within its container ───────────
+        function fitTextToContainer(el, maxFontPx, minFontPx) {
+            // Available width = poster width minus both side paddings (80px each)
+            const availableWidth = 920; // 1080 - 80 - 80
+            let size = maxFontPx;
+            el.style.fontSize = size + 'px';
+            // Use scrollWidth to detect overflow
+            while (el.scrollWidth > availableWidth && size > minFontPx) {
+                size -= 1;
+                el.style.fontSize = size + 'px';
+            }
+        }
+
+        // Also scale using CSS transform as a fallback if text is still too wide
+        function scaleToFit(el, maxWidth) {
+            const ratio = maxWidth / el.scrollWidth;
+            if (ratio < 1) {
+                el.style.transform = `scaleX(${ratio})`;
+                el.style.transformOrigin = 'center top';
+            } else {
+                el.style.transform = '';
+            }
+        }
+
+        function applyFits() {
+            const AVAILABLE = 920; // content width in the poster
+            fitTextToContainer(document.querySelector('.main-title'), 100, 50);
+            fitTextToContainer(document.querySelector('.branch-header'), 85, 30);
+            fitTextToContainer(document.querySelector('.pre-title'), 36, 18);
+            // Extra safety: scale transform if still slightly overflowing
+            scaleToFit(document.querySelector('.main-title'), AVAILABLE);
+            scaleToFit(document.querySelector('.branch-header'), AVAILABLE);
+        }
+
+        // Run once fonts are loaded so measurements are accurate
+        if (document.fonts) {
+            document.fonts.ready.then(applyFits);
+        } else {
+            window.addEventListener('load', applyFits);
+        }
+
+        // ─── Export ────────────────────────────────────────────────────────────
+        function doExport() {
+            // Re-apply fits in case something shifted
+            applyFits();
+
+            const area = document.getElementById('poster-export-area');
+            const btn = document.querySelector('.export-btn-ui');
+            btn.style.display = 'none';
+
+            // Small delay to let the DOM settle before capturing
+            setTimeout(() => {
+                html2canvas(area, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#020617',
+                    scrollX: 0,
+                    scrollY: -window.scrollY,
+                    x: 0,
+                    y: 0,
+                    width: 1080,
+                    height: 1920,
+                    windowWidth: 1080,
+                    windowHeight: 1920
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'Anniversary_Poster_{{ branch_name }}.png';
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
+                    btn.style.display = 'block';
+                });
+            }, 200);
+        }
+    </script>
+
+</body>
+</html>

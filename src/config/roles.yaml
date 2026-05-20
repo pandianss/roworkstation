@@ -1,0 +1,10 @@
+RO_Admin:
+  description: "Full access, user management, audit trail"
+RM:
+  description: "Regional Manager - all departments, escalations, approvals"
+Dept_Head:
+  description: "Own department + common dashboard + read-only others"
+RO_Officer:
+  description: "Own department only"
+Branch_Manager:
+  description: "Read-only dashboard (their branch data only)"

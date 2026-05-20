@@ -1,0 +1,55 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<div class="letter-body" style="font-family: 'SegoeUILight', sans-serif; line-height: 1.6; margin-top: 20px; font-size: 14px; color: #1e293b;">
+    <p>To,<br>
+    <strong>The Branch Manager,</strong><br>
+    {{ branch_name }} (SOL: {{ sol }}),<br>
+    Indian Overseas Bank.</p>
+
+    <div class="doc-title" style="margin: 25px 0 15px 0; text-align: center;">
+        <h1 style="color: #21357f; font-size: 20px; text-decoration: none; margin: 0; font-weight: 800; letter-spacing: 1px;">LETTER OF APPRECIATION</h1>
+    </div>
+
+    <div style="margin: 15px 0; border-left: 4px solid #d4af37; padding-left: 15px; font-weight: 700; color: #21357f; text-transform: uppercase; font-size: 13px;">
+        Sub: Excellence in Banking Performance - {{ milestone }} Milestone in {{ parameter }}
+    </div>
+
+    <p style="margin-top: 15px;">Dear Team,</p>
+
+    <p>It is with great pride and pleasure that we acknowledge the outstanding performance of <strong>{{ branch_name }} Branch</strong> during the month of <strong>{{ month_year }}</strong>.</p>
+
+    <p>Your branch has achieved a significant business breakthrough by crossing the 
+    <span style="background-color: #f8fafc; padding: 4px 8px; border-radius: 4px; border: 1px solid #d4af37; font-weight: 800; color: #21357f;">
+        {{ milestone }}
+    </span> 
+    threshold in <strong>{{ parameter }}</strong> on <strong>{{ achievement_date }}</strong>.</p>
+
+    <p>This achievement is a testament to the dedication, hard work, and relentless focus of the entire staff at your branch. Crossing such a milestone not only contributes to the growth of the Regional Office, Dindigul but also sets a benchmark for excellence within the bank.</p>
+
+    <p style="margin-top: 15px;">We extend our heartiest congratulations to you and your team. We are confident that with this momentum, your branch will reach even greater heights in the coming months.</p>
+
+    <p style="margin-top: 15px; margin-bottom: 0;">Keep up the excellent work!</p>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="footer" style="margin-top: 30px; font-family: 'SegoeUI', sans-serif; page-break-inside: avoid;">
+    <div style="float: right; width: 450px; text-align: center;">
+        <div style="border-top: 1px solid #cbd5e1; width: 400px; margin: 0 auto 10px auto;"></div>
+        
+        <div class="sig-name-row" style="font-size: 13px; color: #1e293b; margin-bottom: 5px; display: flex; justify-content: center; gap: 8px; align-items: baseline;">
+            <span class="tamil-text" style="font-size: 12px;">({{ signatory.name_ta }})</span>
+            <span class="hindi-text" style="font-size: 12px;">({{ signatory.name_hi }})</span>
+            <span style="font-weight: 600; text-transform: uppercase;">({{ signatory.name }})</span>
+        </div>
+
+        <div class="sig-desig-row" style="font-size: 11px; color: #475569; display: flex; justify-content: center; gap: 10px; align-items: baseline;">
+            <span class="tamil-text" style="font-size: 10px;">{{ signatory.desig_ta }}</span>
+            <span class="hindi-text" style="font-size: 10px;">{{ signatory.desig_hi }}</span>
+            <span style="font-weight: 600; text-transform: uppercase;">{{ signatory.desig_en }}</span>
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+{% endblock %}

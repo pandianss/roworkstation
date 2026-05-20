@@ -1,0 +1,269 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<style>
+    .main-table, .breakup-section, .certification {
+        page-break-inside: avoid;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+</style>
+<div class="report-header" style="text-align: center; margin-bottom: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #21357f; padding-bottom: 5px;">
+        <div style="text-align: left;">
+            <h1 style="color: #21357f; margin: 0; font-size: 18px;">DICGC</h1>
+            <h2 style="color: #21357f; margin: 0; font-size: 13px;">Deposit Insurance (DI) Return (Half Yearly)</h2>
+        </div>
+        <div style="text-align: right;">
+            <div style="border: 1px solid #21357f; padding: 3px 6px; font-size: 11px; font-weight: bold;">
+                FORM DI-01
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="format-i" style="margin-top: 10px; page-break-after: always;">
+    <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 10px;">FORMAT – I</div>
+    <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+        <thead>
+            <tr style="background-color: #f8fafc;">
+                <th colspan="2" style="padding: 6px; border: 1px solid #000; text-align: center;">
+                    SUNDRY CREDITORS SUMMARY- REGION CONSOLIDATION<br/>
+                    As on {{ half_year_ending }}
+                </th>
+            </tr>
+            <tr style="background-color: #f1f5f9;">
+                <th style="padding: 4px; border: 1px solid #000; text-align: left; width: 60%;">Category</th>
+                <th style="padding: 4px; border: 1px solid #000; text-align: right;">Amount (Rs.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td style="padding: 3px; border: 1px solid #000;">CLEARING DIFFERENCE</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.clearing_diff|format_inr }}</td></tr>
+            <tr><td style="padding: 3px; border: 1px solid #000;">CLEARING NEXT DAY</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.clearing_next|format_inr }}</td></tr>
+            <tr><td style="padding: 3px; border: 1px solid #000;">DEPOSITS</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.deposits|format_inr }}</td></tr>
+            <tr><td style="padding: 3px; border: 1px solid #000;">ECGC/DICGC CLAIMS</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.claims|format_inr }}</td></tr>
+            <tr><td style="padding: 3px; border: 1px solid #000;">SUIT FILED/COURT</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.suit_filed|format_inr }}</td></tr>
+            <tr><td style="padding: 3px; border: 1px solid #000;">IT/ST ATTACHMENT</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.it_st_attach|format_inr }}</td></tr>
+            <tr><td style="padding: 3px; border: 1px solid #000;">TAX DEDUCTED AT SOURCE</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.tds|format_inr }}</td></tr>
+            <tr><td style="padding: 3px; border: 1px solid #000;">EXCESS CASH</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.excess_cash|format_inr }}</td></tr>
+            <tr><td style="padding: 3px; border: 1px solid #000;">VIGILANCE CASES</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.vigilance|format_inr }}</td></tr>
+            <tr><td style="padding: 3px; border: 1px solid #000;">OTHERS</td><td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.others|format_inr }}</td></tr>
+            <tr style="font-weight: bold; background-color: #f1f5f9;">
+                <td style="padding: 3px; border: 1px solid #000;">TOTAL</td>
+                <td style="padding: 3px; border: 1px solid #000; text-align: right;">{{ sundry_summary.total|format_inr }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="font-size: 10px; font-style: italic; margin-top: 5px;">
+        Ensure that the 'Others' Category does not include TDS or any other amount relating to the above specified category.
+    </p>
+</div>
+
+<div class="form-info" style="margin-top: 20px; font-size: 13px;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 5px; border: 1px solid #cbd5e1; width: 60%;">Return for the Assessment of Premium for the Half Year ending :</td>
+            <td style="padding: 5px; border: 1px solid #cbd5e1; font-weight: bold;">{{ half_year_ending }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 5px; border: 1px solid #cbd5e1;">Insured Bank Code / Registration No. :</td>
+            <td style="padding: 5px; border: 1px solid #cbd5e1; font-weight: bold;">{{ bank_code }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 5px; border: 1px solid #cbd5e1;">Insured Bank’s Name and Address :</td>
+            <td style="padding: 5px; border: 1px solid #cbd5e1; font-weight: bold;">{{ bank_name_address }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="main-table" style="margin-top: 20px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+        <thead>
+            <tr style="background-color: #f8fafc; text-align: center;">
+                <th style="padding: 4px; border: 1px solid #cbd5e1; width: 50px;">Item</th>
+                <th style="padding: 4px; border: 1px solid #cbd5e1; text-align: left;">Particulars</th>
+                <th style="padding: 4px; border: 1px solid #cbd5e1; width: 150px;">Amount (Rs. '000)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">1</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Total Deposits in India as at close of business on {{ half_year_ending }} of which</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right; font-weight: bold;">{{ total_deposits|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">(a)</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; padding-left: 20px;">Deposits of Foreign Governments</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ foreign_govt_deposits|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">(b)</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; padding-left: 20px;">Deposits of Central Government</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ central_govt_deposits|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">(c)</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; padding-left: 20px;">Deposits of State Government</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ state_govt_deposits|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">(d)</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; padding-left: 20px;">Inter Bank Deposits</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ inter_bank_deposits|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">(e)</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; padding-left: 20px;">Any Other Deposits specifically exempted by DICGC</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ exempted_deposits|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">2</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Any other balance due to a depositor not clubbed under "Deposits" at 1 above</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ other_balances|format_inr_k }}</td>
+            </tr>
+            <tr style="background-color: #f1f5f9; font-weight: bold;">
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">3</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Assessable Deposits [1 – (a + b + c + d + e) + 2 ]</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right; color: #21357f;">{{ assessable_deposits|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">4</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Amount relating to deposit held in Sundry Creditors A/c incl. clearing cheques outstanding pending release</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ sundry_creditors|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">5</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Amounts representing Demand Drafts issued by closing deposit accounts but remaining unpaid</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ unpaid_dds|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">6</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Deposits of Local Authorities & quasi-Govt. bodies</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ local_authorities|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">7</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Deposits of autonomous/statutory bodies, Govt. owned Corporations, Govt. companies, LIC, etc.</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ autonomous_bodies|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">8</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Security Deposits & Earnest monies held in the name of Govt. Depts. on account of constituents</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ security_deposits_govt|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">9</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Deposits held in individual names of Govt. & Embassy Officials, Regimental Officers</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ govt_embassy_officials|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">10</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Overdue Term Deposits & Unclaimed Deposits/Balances</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ overdue_unclaimed|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">11</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Amount of Interest Accrued and Payable</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ interest_accrued_payable|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">12</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Amount of Interest Accrued on all deposits</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ interest_accrued_all|format_inr_k }}</td>
+            </tr>
+            <tr style="background-color: #f1f5f9; font-weight: bold;">
+                <td colspan="2" style="padding: 8px; border: 1px solid #cbd5e1; text-align: center; color: #21357f; font-size: 14px;">
+                    PREMIUM ASSESSMENT
+                </td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;"></td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">—</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Current Premium Payable @ 6 Paise per Half Year per Rs. 100/- (in Rupees)</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right; font-weight: bold;">{{ premium_payable|format_inr }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">—</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; padding-left: 20px;">CGST @ 9% (in Rupees)</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ cgst|format_inr }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">—</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; padding-left: 20px;">SGST @ 9% (in Rupees)</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right;">{{ sgst|format_inr }}</td>
+            </tr>
+            <tr style="background-color: #f1f5f9; font-weight: bold;">
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: center;">—</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1;">Net Amount Payable (in Rupees)</td>
+                <td style="padding: 4px; border: 1px solid #cbd5e1; text-align: right; color: #21357f;">{{ net_amount_payable|format_inr }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="breakup-section" style="margin-top: 30px;">
+    <h3 style="font-size: 14px; border-bottom: 1px solid #21357f; padding-bottom: 5px;">13. Break-up of Assessable Deposits at item No.3</h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px;">
+        <thead>
+            <tr style="background-color: #f8fafc; text-align: center;">
+                <th style="padding: 3px; border: 1px solid #cbd5e1;">Size of Deposits</th>
+                <th style="padding: 3px; border: 1px solid #cbd5e1; width: 150px;">No. of Accounts</th>
+                <th style="padding: 3px; border: 1px solid #cbd5e1; width: 200px;">Assessable Deposits (Rs. '000)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 3px; border: 1px solid #cbd5e1;">Up to and inclusive of Rs. 5,00,000/-</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: center;">{{ breakup.n1 }}</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: right;">{{ breakup.a1|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 3px; border: 1px solid #cbd5e1;">Over Rs. 5,00,000/- & up to Rs. 7,50,000/-</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: center;">{{ breakup.n2 }}</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: right;">{{ breakup.a2|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 3px; border: 1px solid #cbd5e1;">Over Rs. 7,50,000/- & up to Rs. 10,00,000/-</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: center;">{{ breakup.n3 }}</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: right;">{{ breakup.a3|format_inr_k }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 3px; border: 1px solid #cbd5e1;">Over Rs. 10,00,000/-</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: center;">{{ breakup.n4 }}</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: right;">{{ breakup.a4|format_inr_k }}</td>
+            </tr>
+            <tr style="background-color: #f8fafc; font-weight: bold;">
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: right;">Total</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: center;">{{ breakup.n_total }}</td>
+                <td style="padding: 3px; border: 1px solid #cbd5e1; text-align: right;">{{ breakup.a_total|format_inr_k }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="font-size: 11px; margin-top: 8px; font-weight: bold;">
+        @ Total of assessable deposits at item No.13 should tally with total of assessable deposits at item No. 3.
+    </p>
+</div>
+
+<div class="certification" style="margin-top: 40px; font-size: 12px; line-height: 1.5;">
+    <p>We hereby certify that to the best of our knowledge, the above particulars are correct and agree with the books and records of the bank. We also confirm that DI Return for the previous assessment period has been prepared and sent to DICGC.</p>
+    
+    <div style="margin-top: 50px; display: flex; justify-content: space-between;">
+        <div style="width: 45%;">
+            <p>Place : {{ place }}</p>
+            <p>Date : {{ report_date }}</p>
+        </div>
+        <div style="width: 50%; text-align: right;">
+            <div style="margin-bottom: 40px;">
+                <p style="font-weight: bold; margin-bottom: 2px;">Signature of Authorised Official</p>
+                <div style="border-top: 1px solid #000; width: 250px; float: right;"></div>
+            </div>
+            <div style="clear: both; padding-top: 10px;">
+                <p style="font-weight: bold;">({{ first_auth_name }})</p>
+                <p>{{ first_auth_desig }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<div class="doc-title">
+    <h2 class="main-title">OFFICE NOTE / कार्यालय टिप्पणी</h2>
+    <div style="text-align: right; font-size: 11px; color: #666; margin-top: -10px;">
+        Ref: RO/GAD/DD/2026/{{ branch_sol }}<br>
+        Date: {{ current_date }}
+    </div>
+</div>
+
+<div class="letter-body">
+    <div class="section-title">SUBJECT: ISSUANCE OF HIGH VALUE DD - APPROVAL FOR {{ applicant_name }}</div>
+    
+    <div style="margin: 20px 0; line-height: 1.8;">
+        <p>This note is submitted to consider the request from <strong>{{ issuing_branch }} (SOL: {{ branch_sol }})</strong> for the issuance of a High Value Demand Draft as detailed below:</p>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+        <tr style="background: #f8fafc;">
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left; width: 30%;">Applicant Name</th>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">{{ applicant_name }}</td>
+        </tr>
+        <tr>
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">Account Number</th>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">{{ account_no }}</td>
+        </tr>
+        <tr style="background: #f8fafc;">
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">KYC Compliance</th>
+            {% if kyc_status == 'YES' %}
+            <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #059669;">
+            {% else %}
+            <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #dc2626;">
+            {% endif %}
+                {{ kyc_status }}
+            </td>
+        </tr>
+        <tr>
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">Beneficiary</th>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">{{ beneficiary_name }}</td>
+        </tr>
+        <tr style="background: #f8fafc;">
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">Amount (₹)</th>
+            <td style="padding: 12px; border: 1px solid #e2e8f0; font-size: 18px; font-weight: 900; color: #1e3a8a;">
+                ₹ {{ amount | format_inr }}
+            </td>
+        </tr>
+        <tr>
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">Payable At</th>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">{{ dd_drawn_on }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">1. Purpose of Transaction</div>
+    <div class="rich-content" style="margin-bottom: 25px; padding: 15px; background: #fff; border-left: 4px solid #1e3a8a;">
+        {{ purpose | safe }}
+    </div>
+
+    <div class="section-title">2. Policy Compliance</div>
+    <div style="margin-bottom: 30px;">
+        <p>The proposal has been scrutinized with reference to the following policy circulars:</p>
+        <ul style="margin-top: 10px; padding-left: 20px;">
+            {% for circ in circulars %}
+            <li style="margin-bottom: 8px;">
+                Circular from <strong>{{ circ.dept }}</strong> dated <strong>{{ circ.date }}</strong> (Ref: {{ circ.ref }})
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="section-title">3. Recommendation</div>
+    <div style="margin-bottom: 50px;">
+        <p>Considering the KYC compliance status and the stated purpose of the transaction, we may permit the branch to issue the High Value DD as requested. Submitted for approval.</p>
+    </div>
+
+    <!-- Signatory Section -->
+    <div style="margin-top: 100px; display: flex; justify-content: space-between;">
+        <div style="text-align: center;">
+            <div style="border-top: 1px solid #000; width: 150px; margin: 0 auto 5px;"></div>
+            <div style="font-size: 12px; font-weight: 900;">Initiator</div>
+            <div style="font-size: 10px; color: #666;">{{ sig_init | default("Assistant Manager, GAD") }}</div>
+        </div>
+        <div style="text-align: center;">
+            <div style="border-top: 1px solid #000; width: 150px; margin: 0 auto 5px;"></div>
+            <div style="font-size: 12px; font-weight: 900;">Recommending Authority</div>
+            <div style="font-size: 10px; color: #666;">{{ sig_rec | default("Chief Manager, GAD") }}</div>
+        </div>
+        <div style="text-align: center;">
+            <div style="border-top: 1px solid #000; width: 150px; margin: 0 auto 5px;"></div>
+            <div style="font-size: 12px; font-weight: 900;">Approving Authority</div>
+            <div style="font-size: 10px; color: #666;">{{ sig_app | default("Regional Manager") }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

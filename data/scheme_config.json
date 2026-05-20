@@ -1,0 +1,9 @@
+{
+    "hloan": {"l1": "Non-Jewel Loan", "l2": "Core Retail", "l3": "Housing Loan"},
+    "vloan": {"l1": "Non-Jewel Loan", "l2": "Core Retail", "l3": "Vehicle Loan"},
+    "eduloan": {"l1": "Non-Jewel Loan", "l2": "Core Retail", "l3": "Education Loan"},
+    "ploan": {"l1": "Non-Jewel Loan", "l2": "Core Retail", "l3": "Personal Loan"},
+    "agri_jl": {"l1": "Jewel Loan", "l2": "Core Agri", "l3": "Agri Jewel Loan"},
+    "msme_term": {"l1": "Non-Jewel Loan", "l2": "Core MSME", "l3": "MSME Term Loan"},
+    "sme_cc": {"l1": "Non-Jewel Loan", "l2": "Core MSME", "l3": "SME Cash Credit"}
+}

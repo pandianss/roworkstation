@@ -1,0 +1,9 @@
+kpi_weights:
+  business_growth: 0.20
+  psl_achievement: 0.20
+  npa_ratio: 0.20
+  casa_ratio: 0.10
+  cd_ratio: 0.10
+  inspection_rating: 0.10
+  complaint_tat: 0.05
+  staff_productivity: 0.05

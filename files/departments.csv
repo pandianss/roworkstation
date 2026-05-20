@@ -1,0 +1,14 @@
+dept_code,dept_en,dept_ta,dept_hi,email
+FINI,FINANCIAL INCLUSION,நிதி உள்ளடக்கம்,वित्तीय समावेशन,rofi@iob.in
+PLAN,PLANNING,திட்டம்,யोजना,roplanning@iob.in
+ARID,AGRICULTURE & RURAL INFRASTRUCTURE DEVELOPMENT,விவசாயம் மற்றும் கிராமப்புற மேம்பாடு,कृषि और ग्रामीण बुनियादी ढांचा विकास,roagri@iob.in
+HRDD,HUMAN RESOURCES DEVELOPMENT DEPARTMENT,மனித வள மேம்பாடு,मानव संसाधन विकास विभाग,rohrd@iob.in
+GADM,GENERAL ADMINISTRATION DEPARTMENT,பொது நிர்வாகம்,सामान्य प्रशासन विभाग,rogad@iob.in
+CMON,CREDIT MONITORING,கடன் கண்காணிப்பு,ऋण निगरानी,romonitoring@iob.in
+COMP,COMPLIANCE,இணக்கம்,अनुपालन,rocompliance@iob.in
+MARK,MARKETING,சந்தைப்படுத்தல்,मार्केटिंग,romarketing@iob.in
+LAWD,LAW DEPARTMENT,சட்டத் துறை,विधि विभाग,rolaw@iob.in
+INSP,INSPECTION DEPARTMENT,ஆய்வுத் துறை,निरीक्षण विभाग,roinspection@iob.in
+RISK,RISK MANAGEMENT,இடர் மேலாண்மை,जोखिम प्रबंधन,rorisk@iob.in
+MSME,MSME DIVISION,குறு சிறு நடுத்தர நிறுவனங்கள்,एमएसएमई प्रभाग,romsme@iob.in
+RETL,RETAIL DEPARTMENT,சில்லறை விற்பனைத் துறை,खुदरा विभाग,roretail@iob.in

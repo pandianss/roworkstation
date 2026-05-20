@@ -1,0 +1,59 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<div class="doc-title">
+    <h2 class="main-title">BUSINESS MILESTONES RECORD / व्यवसाय मील के पत्थर का रिकॉर्ड</h2>
+    <div style="font-size: 12px; margin-top: 5px; color: #444;">Regional Office, Dindigul | Reporting Date: {{ selected_date }}</div>
+</div>
+
+<div class="letter-body">
+    <div class="section-title">1. Executive Summary</div>
+    <p>This report records branches crossing significant business thresholds in increments of <strong>50 Crores</strong>. Achievements reflect the status as of the reporting month end.</p>
+
+    <div class="section-title">2. Milestone Performance by Parameter</div>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px;">
+        <thead>
+            <tr style="background-color: #21357f; color: white; text-align: left;">
+                <th style="padding: 8px; border: 1px solid #ddd;">Parameter</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Reached 50Cr+</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Reached 100Cr+</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Total Milestones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in summary %}
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;"><strong>{{ row.Parameter }}</strong></td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">{{ row['50Cr+ Count'] }}</td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">{{ row['100Cr+ Count'] }}</td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: center; background-color: #f8fafc;">{{ row['Total Milestones'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="section-title" style="margin-top: 30px;">3. Recent Milestone Achievements (Top Performers)</div>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px;">
+        <thead>
+            <tr style="background-color: #f1f5f9; text-align: left;">
+                <th style="padding: 8px; border: 1px solid #ddd;">Branch Name</th>
+                <th style="padding: 8px; border: 1px solid #ddd;">Parameter</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Value (Cr)</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Milestone Reached</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in achievements %}
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ m.branch_name }}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ m.parameter }}</td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">{{ m.value | round(2) }}</td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                    <span style="background-color: #3b82f6; color: white; padding: 2px 6px; border-radius: 3px; font-weight: 700;">{{ m.milestone }}</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

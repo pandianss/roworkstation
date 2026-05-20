@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @font-face {
+            font-family: 'Segoe UI';
+            src: url('data:font/ttf;base64,{{ font_en }}');
+        }
+        @font-face {
+            font-family: 'Noto Sans Devanagari';
+            src: url('data:font/ttf;base64,{{ font_hi }}');
+        }
+        @font-face {
+            font-family: 'Latha'; /* Common Tamil font */
+            src: url('data:font/ttf;base64,{{ font_ta }}');
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .card {
+            width: 1050px;
+            height: 630px;
+            background: white;
+            font-family: 'Segoe UI', sans-serif;
+            color: #254aa0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            padding: 40px 45px 35px 45px;
+        }
+
+        /* Front Side Styles - Ultra-Premium, Minimalist, Approved Template */
+        #front {
+            border: 1px solid #e5e7eb;
+        }
+
+        .logo-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            margin-top: 15px;
+        }
+        
+        .logo-section img {
+            height: 140px;
+            object-fit: contain;
+        }
+
+        .names-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .name-col {
+            width: 32%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        
+        .name-col-en {
+            text-align: left;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .name-col-ta {
+            text-align: center;
+            font-family: 'Latha', sans-serif;
+        }
+        
+        .name-col-hi {
+            text-align: right;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        .full-name {
+            font-size: 34px;
+            font-weight: 700;
+            color: #254aa0;
+            margin: 0;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        
+        .designation {
+            font-size: 18px;
+            font-weight: 600;
+            color: #b89047;
+            margin: 8px 0 0 0;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
+        }
+
+        .divider-horizontal {
+            width: 100%;
+            height: 3px;
+            background: #254aa0;
+            margin: 35px 0 40px 0;
+        }
+
+        .address-grid {
+            display: flex;
+            justify-content: space-between;
+            flex: 1;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        
+        .addr-col {
+            width: 31%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        
+        .addr-col-en {
+            text-align: left;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .addr-col-ta {
+            text-align: center;
+            font-family: 'Latha', sans-serif;
+        }
+        
+        .addr-col-hi {
+            text-align: right;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        .bank-name {
+            font-size: 25px;
+            font-weight: 700;
+            color: #254aa0;
+            margin: 0 0 8px 0;
+            white-space: nowrap;
+        }
+        
+        .address {
+            font-size: 19px;
+            font-weight: 500;
+            line-height: 1.6;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .divider-vertical {
+            width: 1px;
+            background: rgba(37, 74, 160, 0.2);
+            height: 165px;
+            align-self: center;
+        }
+
+        .contact-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 15px 5px 15px;
+            font-size: 23px;
+            font-weight: 700;
+            color: #374151;
+            border-top: 3px solid rgba(37, 74, 160, 0.18);
+            margin-top: auto;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .icon-svg {
+            width: 30px;
+            height: 30px;
+            stroke: #254aa0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* Back Side Styles */
+        #back {
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        #back .line-right {
+            position: absolute;
+            top: 0;
+            right: 44px;          /* scaled from 38px */
+            width: 32px;          /* scaled from 18px * 1.5 */
+            height: 100%;
+            background: #254aa0;
+            z-index: 1;
+        }
+        #back .line-bottom {
+            position: absolute;
+            bottom: 44px;         /* scaled from 38px */
+            left: 0;
+            width: 100%;
+            height: 32px;         /* scaled from 18px * 1.5 */
+            background: #254aa0;
+            z-index: 2;
+        }
+
+        #back .watermark {
+            position: absolute;
+            top: -280px; left: -280px;
+            width: 750px; height: 750px;
+            opacity: 0.09;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #back .content {
+            position: absolute;
+            top: 0; left: 0; right: 76px; bottom: 116px; /* scaled from 56px/100px, adjusted for thicker line */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+        }
+
+        #back .pill {
+            background: #254aa0;
+            border-radius: 19px; /* scaled from 16px */
+            display: flex;
+            align-items: center;
+            gap: 28px; /* scaled from 24px */
+            padding: 32px 56px 32px 40px; /* scaled from 28px 48px 28px 34px */
+            width: 712px; /* scaled from 610px */
+        }
+
+        #back .pill-icon { 
+            width: 114px; height: 114px; /* scaled from 98px */
+            flex-shrink: 0; 
+        }
+
+        #back .pill-text { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 6px; 
+        }
+
+        #back .iob-letters {
+            font-size: 102px; /* scaled from 88px */
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1;
+            letter-spacing: -1px;
+            font-family: Arial Black, Arial, sans-serif;
+        }
+
+        #back .iob-tagline {
+            font-size: 21px; /* scaled from 18px */
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        #back .footer {
+            position: absolute;
+            bottom: 76px; left: 0; right: 76px; /* scaled from 56px, adjusted for thicker line */
+            height: 60px; /* scaled up from 49px to prevent clipping larger icons */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px 0 25px; /* balanced inside padding */
+            z-index: 3;
+            border: none;
+            background: transparent;
+            margin-top: 0;
+        }
+
+        #back .ft-web { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; /* increased from 6px */
+            color: #254aa0; 
+            font-size: 20px; /* scaled from 16px */
+            font-weight: 700; 
+        }
+        #back .ft-web svg { 
+            width: 26px; height: 26px; /* scaled from 20px */
+        }
+
+        #back .ft-social { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; /* increased from 6px */
+        }
+
+        #back .si {
+            width: 38px; height: 38px; border-radius: 8px; /* scaled from 30px, radius from 6px */
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        #back .si svg { 
+            width: 20px; height: 20px; /* scaled from 16px */
+        }
+
+        #back .si-fb { background: #1877F2; }
+        #back .si-x  { background: #000000; }
+        #back .si-ig { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+        #back .si-yt { background: #FF0000; }
+        #back .si-li { background: #0A66C2; }
+        #back .si-th { background: #000000; }
+
+        #back .at-handle { 
+            color: #254aa0; 
+            font-weight: 700; 
+            font-size: 20px; /* scaled from 16px */
+            margin-left: 6px; /* increased from 3px */
+        }
+
+        #back .ft-phone { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; /* increased from 7px */
+            color: #254aa0; 
+            font-size: 20px; /* scaled from 16px */
+            font-weight: 700; 
+        }
+        #back .ft-phone svg { 
+            width: 26px; height: 26px; /* scaled from 20px */
+        }
+        #back .pipe { 
+            color: #254aa0; 
+            font-weight: 300; 
+            font-size: 24px; /* scaled from 20px */
+            margin: 0 6px; /* increased from 2px */
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Front Side -->
+    <div id="front" class="card">
+        <div class="container">
+            <div class="logo-section">
+                <img src="{{ logo_url }}" alt="IOB Logo">
+            </div>
+
+            <!-- Names Grid -->
+            <div class="names-grid">
+                <!-- English -->
+                <div class="name-col name-col-en">
+                    <div class="full-name">{{ name_en | default('') }}</div>
+                    <div class="designation">{{ designation_en | default('') }}</div>
+                </div>
+                
+                <!-- Tamil -->
+                <div class="name-col name-col-ta">
+                    <div class="full-name">{{ name_ta | default('') }}</div>
+                    <div class="designation">{{ designation_ta | default(designation_local) | default('') }}</div>
+                </div>
+                
+                <!-- Hindi -->
+                <div class="name-col name-col-hi">
+                    <div class="full-name">{{ name_hi | default('') }}</div>
+                    <div class="designation">{{ designation_hi | default('') }}</div>
+                </div>
+            </div>
+
+            <div class="divider-horizontal"></div>
+
+            <!-- Addresses Grid -->
+            <div class="address-grid">
+                <!-- English Address -->
+                <div class="addr-col addr-col-en">
+                    <div class="bank-name">{{ bank_name_en | default('Indian Overseas Bank') }}</div>
+                    <div class="address">{{ (address_en | default('')) | replace('\n', '<br>') }}</div>
+                </div>
+                
+                <div class="divider-vertical"></div>
+                
+                <!-- Tamil Address -->
+                <div class="addr-col addr-col-ta">
+                    <div class="bank-name">{{ bank_name_ta | default('இண்டியன் ஓவர்சீஸ் பேங்க்') }}</div>
+                    <div class="address">{{ (address_ta | default('')) | replace('\n', '<br>') }}</div>
+                </div>
+                
+                <div class="divider-vertical"></div>
+                
+                <!-- Hindi Address -->
+                <div class="addr-col addr-col-hi">
+                    <div class="bank-name">{{ bank_name_hi | default('इण्डियन ओवरसीज़ बैंक') }}</div>
+                    <div class="address">{{ (address_hi | default('')) | replace('\n', '<br>') }}</div>
+                </div>
+            </div>
+
+            <!-- Bottom Contact Section -->
+            <div class="contact-section">
+                <!-- Landline -->
+                <div class="contact-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="#254aa0" class="icon-svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.387a12.035 12.035 0 01-7.108-7.108c-.155-.44.01-1.049.387-1.332l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                    </svg>
+                    <span>{{ phone }}</span>
+                </div>
+                <!-- Mobile -->
+                <div class="contact-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="#254aa0" class="icon-svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                    </svg>
+                    <span>{{ mobile }}</span>
+                </div>
+                <!-- Email -->
+                <div class="contact-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="#254aa0" class="icon-svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                    </svg>
+                    <span>{{ email }}</span>
+                </div>
+                <!-- Web -->
+                <div class="contact-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="#254aa0" class="icon-svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253" />
+                    </svg>
+                    <span>{{ web }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Side -->
+    <div id="back" class="card">
+        <!-- Crossing lines — inset from corner, both extend to card edges -->
+        <div class="line-right"></div>
+        <div class="line-bottom"></div>
+
+        <!-- Watermark -->
+        <img src="{{ logo_url }}" class="watermark" alt="Watermark">
+
+        <!-- Centre logo -->
+        <div class="content">
+            <img src="{{ logo_back_url }}" style="height: 171px; max-width: 100%; object-fit: contain;" alt="IOB Logo">
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="ft-web">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#254aa0" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10"/>
+                    <ellipse cx="12" cy="12" rx="4" ry="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <line x1="4.2" y1="7"  x2="19.8" y2="7"/>
+                    <line x1="4.2" y1="17" x2="19.8" y2="17"/>
+                </svg>
+                www.iob.bank.in
+            </div>
+
+            <div class="ft-social">
+                <div class="si si-fb">
+                    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/>
+                    </svg>
+                </div>
+                <div class="si si-x">
+                    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/>
+                    </svg>
+                </div>
+                <div class="si si-ig">
+                    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/>
+                    </svg>
+                </div>
+                <div class="si si-yt">
+                    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                </div>
+                <div class="si si-li">
+                    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                </div>
+                <div class="si si-th">
+                    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/>
+                    </svg>
+                </div>
+                <span class="at-handle">@IOBIndia</span>
+            </div>
+
+            <div class="ft-phone">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="7" r="3.5" stroke="#254aa0" stroke-width="1.8"/>
+                    <path d="M5 21c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="#254aa0" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M6.5 13.8 C6 9.5 18 9.5 17.5 13.8" stroke="#254aa0" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                    <rect x="4.5" y="13.5" width="3" height="4" rx="1.2" fill="#254aa0"/>
+                    <rect x="16.5" y="13.5" width="3" height="4" rx="1.2" fill="#254aa0"/>
+                </svg>
+                1800 890 4445
+                <span class="pipe">|</span>
+                1800 425 4445
+            </div>
+        </div>
+    </div>
+</body>
+</html>

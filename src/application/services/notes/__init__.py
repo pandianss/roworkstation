@@ -1,0 +1,1 @@
+"""Office note generation services."""

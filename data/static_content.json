@@ -1,0 +1,186 @@
+{
+  "business_clusters": [
+    {
+      "id": "locks-hardware",
+      "district": "Dindigul",
+      "name": "Locks & Brass Hardware",
+      "icon": "🔐",
+      "description": "Dindigul is India's lock capital — over 70% of Indian locks are manufactured here. The cluster comprises 800+ MSMEs producing 35 crore locks annually, exporting to 40+ countries.",
+      "key_products": ["Padlocks", "Door Locks", "Brass Components", "Hardware Fittings"],
+      "employment": "25,000+",
+      "annual_turnover": "₹800 Cr"
+    },
+    {
+      "id": "granite-quarrying",
+      "district": "Dindigul",
+      "name": "Granite & Stone Quarrying",
+      "icon": "🪨",
+      "description": "Rich granite deposits across Dindigul district support a thriving quarrying and export sector. Premium Black Galaxy and Tan Brown granite varieties serve global architectural markets.",
+      "key_products": ["Polished Granite Slabs", "Stone Monuments", "Construction Granite", "Cobblestones"],
+      "employment": "12,000+",
+      "annual_turnover": "₹400 Cr"
+    },
+    {
+      "id": "agro-processing",
+      "district": "Dindigul",
+      "name": "Agro Processing & Dairy",
+      "icon": "🌾",
+      "description": "Banana, coconut, groundnut, and dairy processing clusters support thousands of farmers and agro-entrepreneurs. Aavin dairy is a major employer in the district.",
+      "key_products": ["Banana Chips", "Coconut Oil", "Groundnut Oil", "Pasteurised Milk"],
+      "employment": "18,000+",
+      "annual_turnover": "₹500 Cr"
+    },
+    {
+      "id": "textiles",
+      "district": "Dindigul",
+      "name": "Textiles & Leather Tanning",
+      "icon": "🧵",
+      "description": "Palani and Natham taluks host a significant textile weaving and leather tanning cluster supplying raw and finished leather to Ambur and Chennai exporters.",
+      "key_products": ["Woven Fabrics", "Tanned Leather", "Readymade Garments"],
+      "employment": "10,000+",
+      "annual_turnover": "₹280 Cr"
+    },
+    {
+      "id": "tea-coffee",
+      "district": "Theni",
+      "name": "Tea & Coffee Plantations",
+      "icon": "🍵",
+      "description": "The high-altitude Megamalai region produces premium quality orthodox tea and arabica coffee with GI-tag potential, exported to Europe and the Middle East.",
+      "key_products": ["Orthodox Tea", "Arabica Coffee", "Green Tea", "White Tea"],
+      "employment": "15,000+",
+      "annual_turnover": "₹350 Cr"
+    },
+    {
+      "id": "cardamom",
+      "district": "Theni",
+      "name": "Cardamom & Spices",
+      "icon": "🌿",
+      "description": "Cumbum Valley is one of India's premier cardamom belts — producing fragrant green cardamom, pepper, and allied hill spices exported through the Spices Board.",
+      "key_products": ["Green Cardamom", "Black Pepper", "Cloves", "Ginger"],
+      "employment": "10,000+",
+      "annual_turnover": "₹220 Cr"
+    },
+    {
+      "id": "banana-export",
+      "district": "Theni",
+      "name": "Banana Cultivation & Export",
+      "icon": "🍌",
+      "description": "Theni is one of Tamil Nadu's top banana growing districts. Poovan and Nendran varieties are exported to Sri Lanka, Malaysia, Singapore, and the Gulf via APEDA-registered exporters.",
+      "key_products": ["Poovan Banana", "Nendran Banana", "Banana Powder", "Banana Chips"],
+      "employment": "20,000+",
+      "annual_turnover": "₹380 Cr"
+    },
+    {
+      "id": "tourism-hospitality",
+      "district": "Theni",
+      "name": "Eco-Tourism & Hospitality",
+      "icon": "🏕️",
+      "description": "Megamalai, Kurangani, and Suruli Falls attract eco-tourists year-round. The district's homestay and resort sector is among the fastest growing in Tamil Nadu.",
+      "key_products": ["Eco-Resorts", "Homestays", "Adventure Tourism", "Wildlife Safaris"],
+      "employment": "8,000+",
+      "annual_turnover": "₹150 Cr"
+    }
+  ],
+  "places": [
+    {
+      "id": "dindigul-fort",
+      "district": "Dindigul",
+      "name": "Dindigul Rock Fort",
+      "icon": "🏰",
+      "category": "Heritage",
+      "description": "A magnificent 17th-century fort atop a 90m granite outcrop. Built by the Madurai Nayaks and later held by Hyder Ali, it offers panoramic views of the city. The fort also houses a small church and mosque, symbolising religious harmony.",
+      "best_time": "October to March",
+      "entry": "₹5 (Indian), ₹100 (Foreign)"
+    },
+    {
+      "id": "sirumalai",
+      "district": "Dindigul",
+      "name": "Sirumalai Hills",
+      "icon": "🌄",
+      "category": "Nature",
+      "description": "A serene hill range rising to 1,650m, blanketed with coffee estates, waterfalls, and dense shola forests. Ideal for trekking, bird-watching, and weekend getaways from Dindigul.",
+      "best_time": "November to February",
+      "entry": "Free"
+    },
+    {
+      "id": "palani-temple",
+      "district": "Dindigul",
+      "name": "Palani Murugan Temple",
+      "icon": "🛕",
+      "category": "Religious",
+      "description": "One of the six sacred abodes of Lord Murugan — the Arulmigu Dhandayuthapani Swamy temple atop Sivagiri Hill attracts over 2 crore pilgrims annually. The idol is made of Navapashanam — nine medicinal herbs.",
+      "best_time": "Year-round (Thai Poosam — Jan/Feb peak)",
+      "entry": "Free"
+    },
+    {
+      "id": "kodaikanal",
+      "district": "Dindigul",
+      "name": "Kodaikanal Hill Station",
+      "icon": "🌸",
+      "category": "Nature",
+      "description": "The 'Princess of Hill Stations' at 2,133m. The star-shaped Kodaikanal Lake, Bryant Park, Coaker's Walk, Silver Cascade Falls, and Pillar Rocks are iconic attractions drawing 4 lakh tourists annually.",
+      "best_time": "April to June, September to November",
+      "entry": "Free (Boating extra)"
+    },
+    {
+      "id": "kamarajar-museum",
+      "district": "Dindigul",
+      "name": "Kamarajar Memorial Museum",
+      "icon": "🏛️",
+      "category": "Heritage",
+      "description": "Dedicated to Perunthalaivar K. Kamarajar — born in Virudhunagar, deeply connected to Dindigul. The museum chronicles his transformative contributions to Tamil Nadu's education and industrial growth.",
+      "best_time": "Year-round",
+      "entry": "₹10"
+    },
+    {
+      "id": "megamalai",
+      "district": "Theni",
+      "name": "Megamalai Wildlife Sanctuary",
+      "icon": "🐘",
+      "category": "Wildlife",
+      "description": "A pristine high-altitude sanctuary at 1,500m bordering Kerala. Home to Asian elephants, leopards, gaurs, lion-tailed macaques, and 230+ bird species. Tea estates create a stunning mosaic landscape.",
+      "best_time": "November to May",
+      "entry": "₹30 (Indian)"
+    },
+    {
+      "id": "vaigai-dam",
+      "district": "Theni",
+      "name": "Vaigai Dam & Reservoir",
+      "icon": "💧",
+      "category": "Nature",
+      "description": "A scenic earthen dam across the Vaigai River in the Western Ghats foothills. Supplies water to Madurai and Dindigul. The reservoir is a popular family picnic spot with boating facilities.",
+      "best_time": "July to December",
+      "entry": "Free"
+    },
+    {
+      "id": "suruli-falls",
+      "district": "Theni",
+      "name": "Suruli Falls",
+      "icon": "🌊",
+      "category": "Nature",
+      "description": "A spectacular 151-foot cascade in the Megamalai foothills, surrounded by dense forest. The Suruli Murugan Temple at the base adds spiritual significance to this natural wonder.",
+      "best_time": "July to October",
+      "entry": "₹20"
+    },
+    {
+      "id": "kurangani",
+      "district": "Theni",
+      "name": "Kurangani Hills",
+      "icon": "🏔️",
+      "category": "Adventure",
+      "description": "A trekker's paradise at 1,840m, famous for the Kurinji (Strobilanthes kunthiana) flowers that bloom once every 12 years. The next bloom is due in 2030. Excellent viewpoints over the Theni plains.",
+      "best_time": "March to May",
+      "entry": "Free"
+    },
+    {
+      "id": "cumbum-valley",
+      "district": "Theni",
+      "name": "Cumbum Valley",
+      "icon": "🍇",
+      "category": "Nature",
+      "description": "Known as the 'California of South India', Cumbum Valley's microclimate supports grape cultivation, cardamom plantations, and stunning valley views. The Bodi-Gudalur route offers scenic drives.",
+      "best_time": "October to March",
+      "entry": "Free"
+    }
+  ]
+}

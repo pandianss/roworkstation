@@ -1,0 +1,17 @@
+streamlit>=1.35.0
+pandas>=2.0.0
+numpy>=1.24.0
+plotly>=5.14.0
+pydantic>=2.7.0
+pydantic-settings>=2.0.0
+SQLAlchemy>=2.0.0
+Pillow>=10.0.0
+# PDF generation uses Headless Edge via subprocess (no external python dependencies required)
+openpyxl>=3.1.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
+Jinja2>=3.1.0
+fastapi>=0.100.0
+uvicorn>=0.22.0
+psycopg2-binary>=2.9.0
+alembic>=1.13.0

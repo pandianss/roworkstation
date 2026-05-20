@@ -1,0 +1,95 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<style>
+    .wizard-report { font-family: 'Inter', sans-serif; }
+    .section-title { color: #21357f; border-bottom: 2px solid #21357f; padding-bottom: 5px; margin-top: 25px; font-size: 16px; }
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .data-table td { padding: 8px; border: 1px solid #cbd5e1; font-size: 13px; }
+    .label { font-weight: bold; background-color: #f8fafc; width: 40%; }
+    .value { font-weight: 500; }
+    .calculation-box { background-color: #f1f5f9; border: 1px solid #21357f; padding: 15px; margin-top: 20px; border-radius: 5px; }
+</style>
+
+<div class="report-header" style="text-align: center;">
+    <h1 style="color: #21357f; margin: 0; font-size: 20px;">OFFICE NOTE</h1>
+    <h2 style="color: #64748b; margin: 5px 0; font-size: 14px;">Calculation of Broken Period Interest</h2>
+</div>
+
+<div class="wizard-report">
+    <div class="section-title">1. DEPOSITOR & ACCOUNT DETAILS</div>
+    <table class="data-table">
+        <tr>
+            <td class="label">Depositor Type</td><td class="value">{{ depositor_type }}</td>
+        </tr>
+        <tr>
+            <td class="label">Customer Category</td><td class="value">{{ category }}</td>
+        </tr>
+        <tr>
+            <td class="label">CIF ID / Customer ID</td><td class="value">{{ cif_id }}</td>
+        </tr>
+        <tr>
+            <td class="label">Account Number</td><td class="value">{{ account_no }}</td>
+        </tr>
+        <tr>
+            <td class="label">Deposit Open Date</td><td class="value">{{ open_date }}</td>
+        </tr>
+        {% if depositor_type == 'Individual' %}
+        <tr>
+            <td class="label">Date of Birth / Age</td><td class="value">{{ dob }} ({{ age }} years)</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <div class="section-title">2. INTEREST CRITERIA</div>
+    <table class="data-table">
+        <tr>
+            <td class="label">Principal Amount</td><td class="value">₹ {{ principal|format_inr }}</td>
+        </tr>
+        <tr>
+            <td class="label">Effective Interest Rate</td><td class="value">{{ effective_rate }}% (Base: {{ base_rate }}% + Spread: {{ spread }}%)</td>
+        </tr>
+        <tr>
+            <td class="label">Compounding Frequency</td><td class="value">{{ frequency }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">3. BROKEN PERIOD DETAILS</div>
+    <table class="data-table">
+        <tr>
+            <td class="label">Period</td><td class="value">{{ start_date }} to {{ end_date }}</td>
+        </tr>
+        <tr>
+            <td class="label">Total Days</td><td class="value">{{ days }} days</td>
+        </tr>
+    </table>
+
+    <div class="calculation-box">
+        <div style="font-weight: bold; color: #21357f; margin-bottom: 10px;">INTEREST CALCULATION RESULT</div>
+        <div style="font-size: 24px; font-weight: bold; color: #059669;">₹ {{ interest_amount|format_inr }}</div>
+        <div style="font-size: 11px; color: #64748b; margin-top: 5px;">
+            * Calculated based on {{ frequency }} compounding for {{ days }} days.
+        </div>
+    </div>
+
+    <div class="section-title">4. JUSTIFICATION</div>
+    <div style="padding: 15px; background: #fff; border: 1px solid #cbd5e1; min-height: 100px; font-size: 13px; margin-top: 10px;">
+        {{ justification|safe }}
+    </div>
+
+    <div style="margin-top: 50px; border-top: 1px solid #cbd5e1; pt: 20px;">
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 50%; font-size: 12px; vertical-align: top;">
+                    <p>Submitted by: {{ submitted_by }}</p>
+                    <p>Date: {{ datetime.date.today().strftime('%d.%m.%Y') }}</p>
+                </td>
+                <td style="text-align: right; vertical-align: top;">
+                    <div style="margin-bottom: 30px; font-size: 13px; font-weight: bold;">Signature of Recommending Authority</div>
+                    <div style="border-top: 1px solid #000; width: 200px; float: right;"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

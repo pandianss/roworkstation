@@ -1,0 +1,57 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<style>
+    .wizard-report { font-family: 'Inter', sans-serif; }
+    .section-title { color: #21357f; border-bottom: 2px solid #21357f; padding-bottom: 5px; margin-top: 25px; font-size: 16px; text-transform: uppercase; }
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .data-table td { padding: 10px; border: 1px solid #e2e8f0; font-size: 13px; }
+    .label { font-weight: bold; background-color: #f8fafc; width: 35%; color: #475569; }
+    .value { font-weight: 500; color: #1e293b; }
+    .header-box { text-align: center; margin-bottom: 30px; }
+    .ref-badge { display: inline-block; padding: 4px 12px; background: #21357f; color: white; border-radius: 4px; font-size: 11px; margin-top: 5px; }
+</style>
+
+<div class="header-box">
+    <h1 style="color: #21357f; margin: 0; font-size: 22px;">OFFICE NOTE / REPORT</h1>
+    <h2 style="color: #64748b; margin: 5px 0; font-size: 16px;">{{ title }}</h2>
+    {% if reference_no %}
+    <div class="ref-badge">Ref: {{ reference_no }}</div>
+    {% endif %}
+</div>
+
+<div class="wizard-report">
+    <div class="section-title">Submission Details</div>
+    <table class="data-table">
+        {% for key, val in data.items() %}
+        {% if val is not none and val != '' %}
+        <tr>
+            <td class="label">{{ key|replace('_', ' ')|title }}</td>
+            <td class="value">
+                {% if val is number %}
+                    {{ val|format_inr }}
+                {% else %}
+                    {{ val }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+
+    <div style="margin-top: 60px; border-top: 1px solid #cbd5e1; padding-top: 20px;">
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 50%; font-size: 12px; vertical-align: top;">
+                    <p><strong>Submitted by:</strong> {{ submitted_by }}</p>
+                    <p><strong>Date:</strong> {{ date }}</p>
+                </td>
+                <td style="text-align: right; vertical-align: top;">
+                    <div style="margin-bottom: 40px; font-size: 13px; font-weight: bold;">Signature of Authorized Official</div>
+                    <div style="border-top: 1px solid #000; width: 220px; float: right;"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

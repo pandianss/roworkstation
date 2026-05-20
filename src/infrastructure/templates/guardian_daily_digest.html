@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RO Guardian - Daily Operations Digest</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 20mm 15mm 20mm 15mm;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-size: 9pt;
+                color: #555555;
+            }
+        }
+        
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #333333;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+            font-size: 10pt;
+        }
+
+        /* Brand Colors */
+        .color-primary { color: #254aa0; }
+        .bg-primary { background-color: #254aa0; }
+        
+        /* Header Block */
+        .header-container {
+            border-bottom: 2px solid #254aa0;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-box img {
+            height: 48px;
+            width: auto;
+        }
+        
+        .title-block {
+            text-align: right;
+        }
+        
+        .bank-title-en {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #254aa0;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        
+        .bank-title-hi {
+            font-size: 12pt;
+            color: #444444;
+            margin: 2px 0 0 0;
+        }
+        
+        .bank-title-ta {
+            font-size: 11pt;
+            color: #555555;
+            margin: 2px 0 0 0;
+        }
+        
+        .doc-title {
+            text-align: center;
+            margin: 15px 0 25px 0;
+        }
+        
+        .doc-title h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #254aa0;
+            margin: 0 0 4px 0;
+            letter-spacing: 0.5px;
+        }
+        
+        .doc-title h2 {
+            font-size: 11pt;
+            font-weight: normal;
+            color: #555555;
+            margin: 0;
+        }
+        
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 12px 15px;
+            background-color: #f4f6fa;
+            border-left: 4px solid #254aa0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .meta-item {
+            font-size: 9.5pt;
+        }
+        
+        .meta-item strong {
+            color: #254aa0;
+        }
+
+        /* Section Headings */
+        .section-header {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #254aa0;
+            padding: 6px 12px;
+            margin: 25px 0 15px 0;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        /* Directives Section */
+        .directive-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            background-color: #ffffff;
+        }
+        
+        .directive-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .directive-title {
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: #254aa0;
+        }
+        
+        .directive-author {
+            font-size: 8.5pt;
+            color: #64748b;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .directive-desc {
+            font-size: 9.5pt;
+            color: #334155;
+            margin: 0;
+            white-space: pre-line;
+        }
+        
+        /* Followups Table */
+        table.followups-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 9pt;
+        }
+        
+        table.followups-table th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 2px solid #cbd5e1;
+            text-transform: uppercase;
+            font-size: 8pt;
+        }
+        
+        table.followups-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        
+        table.followups-table tr:nth-child(even) {
+            background-color: #fafbfc;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 7.5pt;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .badge-p1 { background-color: #fee2e2; color: #ef4444; }
+        .badge-p2 { background-color: #ffedd5; color: #f97316; }
+        .badge-p3 { background-color: #fef9c3; color: #ca8a04; }
+        .badge-p4 { background-color: #f0fdf4; color: #22c55e; }
+        
+        .badge-resolved { background-color: #dcfce7; color: #16a34a; text-transform: uppercase; }
+        .badge-pending { background-color: #fef3c7; color: #d97706; text-transform: uppercase; }
+        .badge-escalated { background-color: #ffedd5; color: #ea580c; text-transform: uppercase; }
+
+        .observation-details {
+            white-space: pre-line;
+        }
+
+        /* Signatures Block */
+        .signatures-container {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            page-break-inside: avoid;
+        }
+        
+        .sig-box {
+            text-align: center;
+            flex: 1;
+            max-width: 220px;
+        }
+        
+        .sig-line {
+            border-top: 1px solid #94a3b8;
+            margin-top: 40px;
+            padding-top: 6px;
+            font-size: 9pt;
+            color: #475569;
+        }
+
+        .no-records {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-style: italic;
+            border: 1px dashed #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Print Header -->
+    <div class="header-container">
+        <div class="logo-box">
+            {% if org.bankLogo %}
+                <img src="{{ org.bankLogo }}" alt="Bank Logo">
+            {% endif %}
+        </div>
+        <div class="title-block">
+            <div class="bank-title-en">{{ org.bankNameEn }}</div>
+            <div class="bank-title-hi">{{ org.bankNameHi }}</div>
+            <div class="bank-title-ta">{{ org.bankNameTa }}</div>
+        </div>
+    </div>
+
+    <!-- Document Title -->
+    <div class="doc-title">
+        <h1>DAILY GUARDIAN OPERATIONS DIGEST</h1>
+        <h2>दैनिक संरक्षक संचालन सारांश &bull; தினசரி கார்டியன் செயல்பாட்டு சுருக்கம்</h2>
+    </div>
+
+    <!-- Metadata Panel -->
+    <div class="meta-grid">
+        <div class="meta-item"><strong>Reporting Date:</strong> {{ date }}</div>
+        <div class="meta-item"><strong>Region:</strong> {{ org.officeNameEn }}</div>
+        <div class="meta-item"><strong>Compiled At:</strong> {{ today.strftime("%d.%m.%Y") }}</div>
+        <div class="meta-item"><strong>Document ID:</strong> RO/GDN/{{ date.replace('.', '') }}</div>
+    </div>
+
+    <!-- 1. Shared Daily Directives -->
+    <div class="section-header">
+        Daily Focus & Directives &bull; दैनिक फोकस और निर्देश &bull; தினசரி செயல்பாட்டு முன்னுரிமைகள்
+    </div>
+    
+    {% if directives %}
+        {% for task in directives %}
+            <div class="directive-card">
+                <div class="directive-header">
+                    <span class="directive-title">{{ task.title }}</span>
+                    <span class="directive-author">Posted by: {{ task.posted_by }}</span>
+                </div>
+                <p class="directive-desc">{{ task.description }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-records">
+            No focus directives posted for this date.<br>
+            इस तिथि के लिए कोई निर्देश पोस्ट नहीं किए गए हैं।<br>
+            இந்த தேதிக்கான செயல்பாட்டு முன்னுரிமைகள் எதுவும் பதிவு செய்யப்படவில்லை.
+        </div>
+    {% endif %}
+
+    <!-- 2. Branch Follow-ups Log -->
+    <div class="section-header">
+        Branch Updates Log &bull; शाखा अनुवर्ती गतिविधि विवरण &bull; கிளைகள் தொடர் நடவடிக்கை பதிவுகள்
+    </div>
+    
+    {% if followups %}
+        <table class="followups-table">
+            <thead>
+                <tr>
+                    <th style="width: 8%;">Time</th>
+                    <th style="width: 15%;">Guardian Officer</th>
+                    <th style="width: 18%;">Branch</th>
+                    <th style="width: 12%;">Category</th>
+                    <th style="width: 32%;">Observations & Action Details</th>
+                    <th style="width: 7%;">Priority</th>
+                    <th style="width: 8%;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in followups %}
+                    <tr>
+                        <td>{{ item.timestamp }}</td>
+                        <td><strong>{{ item.go_name }}</strong></td>
+                        <td>{{ item.branch_name }}<br><small class="color-primary">SOL: {{ item.sol }}</small></td>
+                        <td><span class="badge" style="background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;">{{ item.category }}</span></td>
+                        <td class="observation-details">{{ item.details }}</td>
+                        <td>
+                            {% if item.priority == 'P1' %}
+                                <span class="badge badge-p1">P1</span>
+                            {% elif item.priority == 'P2' %}
+                                <span class="badge badge-p2">P2</span>
+                            {% elif item.priority == 'P3' %}
+                                <span class="badge badge-p3">P3</span>
+                            {% else %}
+                                <span class="badge badge-p4">P4</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if 'RESOLVED' in item.status.upper() %}
+                                <span class="badge badge-resolved">Resolved</span>
+                            {% elif 'ESCALATED' in item.status.upper() %}
+                                <span class="badge badge-escalated">Escalated</span>
+                            {% else %}
+                                <span class="badge badge-pending">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="no-records">
+            No branch follow-ups or updates recorded for this date.<br>
+            इस तिथि के लिए कोई अनुवर्ती गतिविधि दर्ज नहीं की गई है।<br>
+            இந்த தேதிக்கான கிளைகள் தொடர் நடவடிக்கை பதிவுகள் எதுவும் பதிவு செய்யப்படவில்லை.
+        </div>
+    {% endif %}
+
+    <!-- Executive Sign-off Block -->
+    <div class="signatures-container">
+        <div class="sig-box">
+            <div class="sig-line">Compiled by<br>{{ sig_compile }}</div>
+        </div>
+        
+        {% if sig_reviews is defined and sig_reviews is iterable and sig_reviews is not string %}
+            {% for r in sig_reviews %}
+                <div class="sig-box">
+                    <div class="sig-line">Reviewed by<br>{{ r }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="sig-box">
+                <div class="sig-line">Reviewed by<br>{{ sig_review }}</div>
+            </div>
+        {% endif %}
+        
+        <div class="sig-box">
+            <div class="sig-line">Approved by<br>{{ sig_approve }}</div>
+        </div>
+    </div>
+
+</body>
+</html>

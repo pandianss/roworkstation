@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        .page-container {
+            page-break-after: avoid;
+            page-break-before: avoid;
+        }
+
+        /* ── Bundled Unicode Fonts ── */
+        @font-face {
+            font-family: 'GoogleSans';
+            src: url('{{ font_base_url }}GoogleSans-Regular.ttf') format('truetype');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'GoogleSans';
+            src: url('{{ font_base_url }}GoogleSans-Bold.ttf') format('truetype');
+            font-weight: 700;
+        }
+        @font-face {
+            font-family: 'TamilCondensedCustom';
+            src: url('{{ font_base_url }}NotoSansTamilCondensed-Regular.ttf') format('truetype');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'TamilCondensedCustom';
+            src: url('{{ font_base_url }}NotoSansTamilCondensed-Bold.ttf') format('truetype');
+            font-weight: 700;
+        }
+        @font-face {
+            font-family: 'NotoSansDevanagari';
+            src: url('{{ font_base_url }}NotoSansDevanagari-Regular.ttf') format('truetype');
+            font-weight: 400;
+        }
+
+        @font-face {
+            font-family: 'SegoeUILight';
+            src: url('{{ font_base_url }}SegoeUI-Light.ttf') format('truetype');
+            font-weight: 300;
+        }
+        @font-face {
+            font-family: 'SegoeUI';
+            src: url('{{ font_base_url }}SegoeUI-Regular.ttf') format('truetype');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'SegoeUI';
+            src: url('{{ font_base_url }}SegoeUI-Bold.ttf') format('truetype');
+            font-weight: 700;
+        }
+
+        /* ── Script-specific class selectors ── */
+        .bank-name-ta, .office-label-ta, .address-ta, .tamil-text {
+            font-family: 'TamilCondensedCustom', sans-serif !important;
+            font-stretch: condensed !important;
+            letter-spacing: -0.2px !important;
+        }
+        .bank-name-ta, .office-label-ta {
+            font-size: calc(1em - 1.5pt) !important;
+            white-space: nowrap;
+        }
+        .address-ta {
+            font-size: calc(1em - 0.5pt) !important;
+        }
+        .bank-name-hi, .office-label-hi, .address-hi, .hindi-text {
+            font-family: 'GoogleSans', 'NotoSansDevanagari', sans-serif !important;
+            font-size: calc(1em + 0.5pt) !important;
+        }
+
+        body { 
+            font-family: 'Century Gothic', 'GoogleSans', 'Segoe UI', Tahoma, sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            color: #1a202c;
+            line-height: 1.3;
+            font-size: 14px; 
+        }
+
+        .rich-content {
+            line-height: 1.5;
+            text-align: justify;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .rich-content p, .rich-content div {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .rich-content ul, .rich-content ol {
+            margin-top: 0;
+            margin-bottom: 10px;
+            padding-left: 25px;
+        }
+
+        .rich-content h1, .rich-content h2, .rich-content h3 {
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #21357f;
+        }
+
+        .pre-wrap {
+            white-space: pre-wrap;
+        }
+
+        .page-container {
+            position: relative;
+        }
+
+        /* Header Layout */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Align logo left, seal right */
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .bank-logo {
+            height: 70px;
+            width: auto;
+        }
+
+        .info-header-row {
+            background-color: #21357f; /* IOB Logo Blue */
+            color: white !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            width: 100%;
+            margin-bottom: 5px;
+            border-radius: 2px;
+        }
+
+        .info-header-item {
+            flex: 1;
+            padding: 6px 5px;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            font-family: Arial, sans-serif;
+        }
+
+        .info-header-item:last-child {
+            border-right: none;
+        }
+
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            margin-bottom: 5px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+
+        .info-col {
+            flex: 1;
+            padding: 0 5px;
+            font-size: 10px;
+            color: #444;
+            border-right: 1px solid #ddd;
+        }
+
+        .info-col:last-child {
+            border-right: none;
+        }
+
+        .address-text {
+            line-height: 1.4;
+            font-size: 11px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Contact Row */
+        .contact-section {
+            background: #f8fafc;
+            padding: 4px 0;
+            font-size: 11px;
+            color: #475569;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1e293b;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        .content { 
+            min-height: 400px;
+        }
+        
+        .doc-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .main-title { 
+            font-size: 16px; 
+            color: #21357f; 
+            text-transform: uppercase;
+            margin: 0;
+            font-weight: 800;
+            text-decoration: underline;
+        }
+
+        .letter-body {
+            font-size: 14px;
+            text-align: justify;
+        }
+
+        .section-title {
+            font-weight: 800;
+            color: #21357f;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .footer { 
+            margin-top: 40px; 
+            padding-top: 20px;
+        }
+        
+        .signatories-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .signatory-col {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .signature-space {
+            height: 40px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .sig-trilingual {
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 2px;
+        }
+
+        .sig-name-en {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #1e293b;
+        }
+
+        .page-footer {
+            margin-top: 50px;
+            font-size: 10px;
+            color: #94a3b8;
+            text-align: center;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 10px;
+        }
+
+        /* Anniversary Seal Styling (Enhanced Rosette) */
+        .anniversary-seal {
+            width: 55px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin-right: 10px;
+        }
+
+        .seal-circle {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #21357f 0%, #0f172a 100%);
+            border: 2px solid #d4af37; /* Metallic Gold */
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Wreath/Rosette outer glow */
+        .seal-circle::after {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 50%;
+            border: 1px dashed #d4af37;
+            opacity: 0.6;
+        }
+
+        .seal-years {
+            font-size: 19px;
+            font-weight: 900;
+            color: #fcd34d;
+            line-height: 1;
+            margin-top: 2px;
+            text-shadow: none;
+        }
+        
+        .seal-label {
+            font-size: 4px;
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-top: -1px;
+            color: #fff;
+            letter-spacing: 0.2px;
+        }
+
+        .seal-ribbon {
+            background: linear-gradient(135deg, #be123c 0%, #e11d48 100%);
+            color: white;
+            font-size: 4px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            margin-top: -7px;
+            z-index: 3;
+            box-shadow: none;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .seal-tails {
+            display: flex;
+            justify-content: space-between;
+            width: 25px;
+            height: 12px;
+            margin-top: -4px;
+            z-index: 0;
+        }
+
+        .tail {
+            width: 7px;
+            height: 100%;
+            background: #9f1239;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header with Logo -->
+        <div class="header">
+            {% if org.bankLogo %}
+            <img src="{{ org.bankLogo }}" alt="Bank Logo" class="bank-logo">
+            {% endif %}
+            
+            <div style="display: flex; align-items: center; gap: 15px;">
+                {% if org.betiLogo %}
+                <div class="beti-container">
+                    <img src="{{ org.betiLogo }}" alt="Beti Logo" style="height: 60px; width: auto;">
+                </div>
+                {% endif %}
+                <div class="anniversary-seal">
+                    <div class="seal-circle">
+                        <div class="seal-years">{{ bank_years }}</div>
+                        <div class="seal-label">Years of</div>
+                    </div>
+                    <div class="seal-ribbon">TIMELESS TRUST</div>
+                    <div class="seal-tails">
+                        <div class="tail"></div>
+                        <div class="tail"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3-Column Info Header (Full width colored row) -->
+        <div class="info-header-row" style="text-align: center;">
+            <div class="info-header-item office-label-ta">{{ org.officeNameTa }}</div>
+            <div class="info-header-item office-label-hi">{{ org.officeNameHi }}</div>
+            <div class="info-header-item">{{ org.officeNameEn }}</div>
+        </div>
+
+        <!-- 3-Column Address Row -->
+        <div class="info-section">
+            <div class="info-col">
+                <div class="address-text address-ta">{{ org.addressTaFormatted | safe }}</div>
+            </div>
+            <div class="info-col">
+                <div class="address-text address-hi">{{ org.addressHiFormatted | safe }}</div>
+            </div>
+            <div class="info-col">
+                <div class="address-text">{{ org.addressEnFormatted | safe }}</div>
+            </div>
+        </div>
+
+        <!-- Contact Row -->
+        <div class="contact-section">
+            <span><strong>Phone:</strong> {{ org.phone }}</span>
+            <span><strong>Email:</strong> {{ org.email }}</span>
+            <span><strong>Web:</strong> {{ org.website }}</span>
+        </div>
+
+        <!-- Meta Strip -->
+        <div class="meta-strip">
+            <span>Ref No / संदर्भ संख्या / குறிப்பு எண்: {{ ref_no }}</span>
+            <span>Date / दिनांक / தேதி: {{ date }}</span>
+        </div>
+
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- Footer / Signatories -->
+        {% block footer %}
+        <div class="footer">
+            <div class="signatories-row">
+                {% if prepared_by %}
+                <div class="signatory-col">
+                    <div class="signature-space">Sd/-</div>
+                    <div class="sig-name-en">({{ prepared_by }})</div>
+                    <div class="sig-trilingual">Prepared By</div>
+                </div>
+                {% endif %}
+                {% for sig in signatories %}
+                <div class="signatory-col">
+                    <div class="signature-space">Sd/-</div>
+                    <div class="sig-name-en">({{ sig }})</div>
+                    <div class="sig-trilingual">Authorized Signatory</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endblock %}
+
+        <div class="page-footer">
+        </div>
+    </div>
+</body>
+</html>

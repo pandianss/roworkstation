@@ -1,0 +1,36 @@
+{
+    "products": [
+        {
+            "name": "IOB Housing Loan (Regular)",
+            "category": "Retail",
+            "interest": "8.40% onwards",
+            "tenure": "30 Years",
+            "icon": "🏠",
+            "features": ["No Prepayment Penalty", "Top-up Facility", "Holiday Period"]
+        },
+        {
+            "name": "Jewel Loan (Agriculture)",
+            "category": "Agri",
+            "interest": "7.25%",
+            "tenure": "1 Year",
+            "icon": "💎",
+            "features": ["30 Mins Sanction", "Minimal Docs", "High Per Gram Rate"]
+        },
+        {
+            "name": "IOB Internet Banking",
+            "category": "Digital",
+            "interest": "N/A",
+            "tenure": "Instant",
+            "icon": "🌐",
+            "features": ["24/7 Transfers", "Bill Payments", "Locker Booking"]
+        },
+        {
+            "name": "PMJJBY (Life Insurance)",
+            "category": "Social Security",
+            "interest": "Rs.436 / Year",
+            "tenure": "1 Year",
+            "icon": "🏥",
+            "features": ["Rs.2 Lakh Cover", "Auto-Renewal", "Hassle-free Claims"]
+        }
+    ]
+}

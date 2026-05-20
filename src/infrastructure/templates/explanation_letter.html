@@ -1,0 +1,93 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<div class="letter-body" style="font-family: 'SegoeUILight', sans-serif; line-height: 1.6; margin-top: 20px; font-size: 14px; color: #1e293b;">
+    {% if branch_head %}
+    <p style="margin-bottom: 20px; line-height: 1.5;">
+        <span class="tamil-text" style="font-size: 13px;">{{ branch_head.sal_ta }} {{ branch_head.name_ta }}</span> / 
+        <span class="hindi-text" style="font-size: 13px;">{{ branch_head.sal_hi }} {{ branch_head.name_hi }}</span> / 
+        <strong>{{ branch_head.sal_en }} {{ branch_head.name }}</strong><br>
+        <span class="tamil-text" style="font-size: 11px;">{{ branch_head.desig_ta }}</span> / 
+        <span class="hindi-text" style="font-size: 11px;">{{ branch_head.desig_hi }}</span> / 
+        <span style="font-size: 12px; font-weight: 600; text-transform: uppercase;">{{ branch_head.desig_en }}</span><br>
+        
+        Indian Overseas Bank,<br>
+        {{ branch_name }} ({{ sol }})
+    </p>
+    {% else %}
+    <p>The Branch Manager,<br>
+    Indian Overseas Bank,<br>
+    {{ branch_name }} ({{ sol }})</p>
+    {% endif %}
+
+    <div class="doc-title" style="margin: 25px 0 15px 0; text-align: center;">
+        <h1 style="color: #21357f; font-size: 20px; text-decoration: none; margin: 0; font-weight: 800; letter-spacing: 1px;">EXPLANATION FOR BUDGET SHORTFALL: {{ group_name.upper() }}</h1>
+    </div>
+
+    <div style="margin: 15px 0; border-left: 4px solid #ef4444; padding-left: 15px; font-weight: 700; color: #21357f; text-transform: uppercase; font-size: 13px;">
+        Sub: Shortfall in {{ group_name }} Budget - {{ month_year }}
+    </div>
+
+    <p style="margin-top: 15px;">Dear Sir/Madam,</p>
+
+    <p>Upon reviewing the business performance of <strong>{{ branch_name }} Branch</strong> for the month ended <strong>{{ month_year }}</strong>, it is observed that the branch has significantly fallen short of the assigned budget targets in the following parameters of {{ group_name }}:</p>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px;">
+        <thead>
+            <tr style="background-color: #f8fafc; border-bottom: 1px solid #cbd5e1;">
+                <th style="padding: 10px; text-align: left;">Parameter</th>
+                <th style="padding: 10px; text-align: right;">March 31st</th>
+                <th style="padding: 10px; text-align: right;">Actual</th>
+                <th style="padding: 10px; text-align: right;">Growth</th>
+                <th style="padding: 10px; text-align: right;">Budget</th>
+                <th style="padding: 10px; text-align: center;">% Achievement</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in declines %}
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px; {% if not d.is_parent %}padding-left: 30px; font-style: italic; color: #475569;{% else %}font-weight: 700; color: #21357f;{% endif %}">
+                    {% if not d.is_parent %}└─ {% endif %}{{ d.parameter }}
+                </td>
+                <td style="padding: 10px; text-align: right;">{{ "%.2f"|format(d.fy_start_actual) }}</td>
+                <td style="padding: 10px; text-align: right; {% if d.is_parent %}font-weight: 700;{% endif %}">{{ "%.2f"|format(d.actual) }}</td>
+                <td style="padding: 10px; text-align: right; color: {% if d.fy_growth >= 0 %}#10b981{% else %}#ef4444{% endif %}; {% if d.is_parent %}font-weight: 700;{% endif %}">
+                    {{ "%.2f"|format(d.fy_growth) }}
+                </td>
+                <td style="padding: 10px; text-align: right; {% if d.is_parent %}font-weight: 700;{% endif %}">{{ "%.2f"|format(d.target) }}</td>
+                <td style="padding: 10px; text-align: center; font-weight: 700; color: {% if d.pct < 90 %}#ef4444{% else %}#64748b{% endif %};">
+                    {{ "%.1f"|format(d.pct) }}%
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>Non-achievement of budget targets is a matter of serious concern as it impacts the overall regional growth. You are advised to provide a detailed explanation for the same, outlining the specific reasons for the shortfall and the remedial actions proposed to bridge this gap in the succeeding month.</p>
+
+    <p style="margin-top: 15px;">Your response should reach the Regional Office within 3 working days.</p>
+
+    <p style="margin-top: 25px;">Yours faithfully,</p>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="footer" style="margin-top: 30px; font-family: 'SegoeUI', sans-serif; page-break-inside: avoid;">
+    <div style="float: right; width: 450px; text-align: center;">
+        <div style="border-top: 1px solid #cbd5e1; width: 400px; margin: 0 auto 10px auto;"></div>
+        
+        <div class="sig-name-row" style="font-size: 13px; color: #1e293b; margin-bottom: 5px; display: flex; justify-content: center; gap: 8px; align-items: baseline;">
+            <span class="tamil-text" style="font-size: 12px;">({{ signatory.name_ta }})</span>
+            <span class="hindi-text" style="font-size: 12px;">({{ signatory.name_hi }})</span>
+            <span style="font-weight: 600; text-transform: uppercase;">({{ signatory.name }})</span>
+        </div>
+
+        <div class="sig-desig-row" style="font-size: 11px; color: #475569; display: flex; justify-content: center; gap: 10px; align-items: baseline;">
+            <span class="tamil-text" style="font-size: 10px;">{{ signatory.desig_ta }}</span>
+            <span class="hindi-text" style="font-size: 10px;">{{ signatory.desig_hi }}</span>
+            <span style="font-weight: 600; text-transform: uppercase;">{{ signatory.desig_en }}</span>
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+{% endblock %}

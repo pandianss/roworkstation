@@ -1,0 +1,9 @@
+{
+  "defaults": {
+    "Total Advances": 500000.0,
+    "Total Deposits": 600000.0,
+    "CASA": 200000.0,
+    "NPA": 15000.0
+  },
+  "monthly_targets": {}
+}

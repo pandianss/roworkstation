@@ -1,0 +1,104 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+
+<div class="letter-body">
+    {% if branch_head %}
+    <p style="margin-bottom: 20px; line-height: 1.5;">
+        <span class="tamil-text" style="font-size: 13px;">{{ branch_head.sal_ta }} {{ branch_head.name_ta }}</span> / 
+        <span class="hindi-text" style="font-size: 13px;">{{ branch_head.sal_hi }} {{ branch_head.name_hi }}</span> / 
+        <strong>{{ branch_head.sal_en }} {{ branch_head.name }}</strong><br>
+        
+        <span class="tamil-text" style="font-size: 11px;">{{ branch_head.desig_ta }}</span> / 
+        <span class="hindi-text" style="font-size: 11px;">{{ branch_head.desig_hi }}</span> / 
+        <span style="font-size: 12px; font-weight: 600; text-transform: uppercase;">{{ branch_head.desig_en }}</span><br>
+        
+        Indian Overseas Bank,<br>
+        {{ branch_name }} ({{ sol }})
+    </p>
+    {% else %}
+    <p>The Branch Manager,<br>
+    Indian Overseas Bank,<br>
+    {{ branch_name }} ({{ sol }})</p>
+    {% endif %}
+
+    <h2 class="main-title" style="text-align: center; margin: 30px 0;">
+        BUDGET ALLOCATION FOR FY {{ fy_range }}<br>
+        वित्तीय वर्ष {{ fy_range }} के लिए बजट आवंटन
+    </h2>
+
+    <p>Dear Sir/Madam,</p>
+
+    <p style="text-align: justify;">
+        We are pleased to communicate the business targets for your branch for the Financial Year <strong>{{ fy_range }}</strong>. 
+        These targets have been arrived at after considering the potential in your command area and the regional growth objectives.
+    </p>
+
+    <p style="text-align: justify; margin-bottom: 20px;">
+        वर्ष {{ fy_range }} के लिए आपके शाखा के व्यावसायिक लक्ष्यों को निम्नानुसार सूचित किया जाता है:
+    </p>
+
+    <div class="table-container" style="margin: 20px 0;">
+        <table class="premium-table" style="font-size: 8.5px; width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="min-width: 100px; padding: 4px 2px;">Parameter</th>
+                    <th style="text-align: center; padding: 4px 2px;">Prev FY End</th>
+                    {% for m in months %}
+                    <th style="text-align: center; padding: 4px 2px;">{{ m }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for category, params in budget_groups.items() %}
+                <tr style="background-color: #f1f5f9; font-weight: 800; color: #1e293b;">
+                    <td colspan="{{ months|length + 2 }}" style="padding: 4px 6px;">{{ category }}</td>
+                </tr>
+                {% for p in params %}
+                <tr>
+                    {% if p.is_subset %}
+                    <td style="font-weight: 600; padding: 4px 2px; padding-left: 15px; font-style: italic;">
+                    {% else %}
+                    <td style="font-weight: 600; padding: 4px 2px;">
+                    {% endif %}
+                        {{ p.display_name }}
+                    </td>
+                    <td style="text-align: right; background-color: #f8fafc; padding: 4px 2px;">{{ "{:.2f}".format(p.prev_fy_value) }}</td>
+                    {% for m in months %}
+                    <td style="text-align: right; padding: 4px 2px;">{{ "{:.2f}".format(p.monthly_values.get(m, 0)) }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p style="margin-top: 30px; text-align: justify;">
+        We expect the branch to achieve these targets by consistent efforts and quality customer service. 
+        Please acknowledge receipt of this communication.
+    </p>
+    
+    <p>हम उम्मीद करते हैं कि शाखा निरंतर प्रयासों और गुणवत्तापूर्ण ग्राहक सेवा द्वारा इन लक्ष्यों को प्राप्त करेगी।</p>
+
+    <div class="sig-section" style="margin-top: 60px;">
+        <div style="float: right; text-align: center;">
+            <div class="sig-name" style="font-weight: 700; color: #1e293b; margin-bottom: 5px;">
+                <span class="tamil-text" style="font-size: 13px;">{{ signatory.name_ta }}</span> / 
+                <span class="hindi-text" style="font-size: 13px;">{{ signatory.name_hi }}</span> / 
+                <span style="font-weight: 800; text-transform: uppercase;">{{ signatory.name }}</span>
+            </div>
+            <div class="sig-desig" style="font-size: 11px; color: #475569;">
+                <span class="tamil-text">{{ signatory.desig_ta }}</span> / 
+                <span class="hindi-text">{{ signatory.desig_hi }}</span> / 
+                <span>{{ signatory.desig_en }}</span>
+            </div>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{# Empty footer to avoid 'Prepared By' section in budget communication letters #}
+{% endblock %}

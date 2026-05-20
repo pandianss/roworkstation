@@ -1,0 +1,308 @@
+FI:
+  name: "Financial Inclusion"
+  kpis:
+    - "PMJDY accounts opened"
+    - "BC outlet count"
+    - "Aadhaar seeding %"
+  returns:
+    - name: "Monthly PMJDY return"
+      frequency: monthly
+      due_day: 7
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Weekly BC performance return"
+      frequency: weekly
+      due_day: monday
+      reminder_days: [1]
+CRMD:
+  name: "Credit Monitoring"
+  kpis:
+    - "NPA %"
+    - SMA-0/1/2 tracker
+    - Recovery vs target
+  returns:
+    - name: "Weekly NPA/SMA flash report"
+      frequency: weekly
+      due_day: friday
+      reminder_days: [1]
+    - name: "Monthly credit monitoring return (CMR)"
+      frequency: monthly
+      due_day: 10
+      reminder_days: [7, 3, 1]
+    - name: "Quarterly IRAC review note"
+      frequency: quarterly
+      due_month_day: Q+10
+      reminder_days: [14, 7, 3]
+PLAN:
+  name: "Planning"
+  kpis:
+    - "PSL achievement % vs ACP target"
+    - "Agriculture credit disbursement vs target"
+    - "Weaker section lending %"
+    - "Micro enterprise credit %"
+    - "ANBC for current quarter"
+  returns:
+    - name: "Monthly ACP Progress Report"
+      frequency: monthly
+      due_day: 7
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Quarterly PSL Return to RBI"
+      frequency: quarterly
+      due_month_day: "Q+15"
+      recipient: RBI
+      format: excel
+      reminder_days: [14, 7, 3, 1]
+
+ARID:
+  name: "Agriculture & Rural Infra Dev"
+  kpis:
+    - "KCC accounts issued vs target"
+    - "JLG groups financed"
+    - "SHG-Bank linkage count"
+    - "Crop insurance (PMFBY) coverage %"
+    - "Agri NPA %"
+  returns:
+    - name: "Monthly KCC Saturation Report"
+      frequency: monthly
+      due_day: 7
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Quarterly NABARD Refinance Statement"
+      frequency: quarterly
+      due_month_day: "Q+10"
+      recipient: NABARD
+      format: excel
+      reminder_days: [14, 7, 3]
+    - name: "Weekly Agri Disbursement Flash"
+      frequency: weekly
+      due_day: friday
+      recipient: HO
+      format: excel
+      reminder_days: [1]
+
+HRDD:
+  name: "Human Resources"
+  kpis:
+    - "Vacancies pending filling"
+    - "Training man-days achieved vs target"
+    - "Pending transfer requests"
+    - "ACR/APAR pendency count"
+    - "Grievances resolved %"
+  returns:
+    - name: "Monthly Staff Strength Return"
+      frequency: monthly
+      due_day: 5
+      recipient: HO
+      format: excel
+      reminder_days: [5, 3, 1]
+    - name: "Quarterly Training Return"
+      frequency: quarterly
+      due_month_day: "Q+7"
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+
+GAD:
+  name: "General Administration"
+  kpis:
+    - "AMC contracts due for renewal"
+    - "Pending civil works orders"
+    - "Vehicle utilisation %"
+    - "GEM portal procurement compliance %"
+  returns:
+    - name: "Monthly Expenditure Return"
+      frequency: monthly
+      due_day: 10
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Quarterly Premises Rent Return"
+      frequency: quarterly
+      due_month_day: "Q+10"
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3]
+
+COM:
+  name: "Compliance"
+  kpis:
+    - "KYC/AML compliance % (branches)"
+    - "Overdue RBI circulars implementation count"
+    - "STR/CTR filed on time %"
+    - "Concurrent audit compliance rating"
+    - "IS audit observations pending closure"
+  returns:
+    - name: "Monthly KYC Compliance Return"
+      frequency: monthly
+      due_day: 10
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Monthly FIU-IND CTR/STR Return"
+      frequency: monthly
+      due_day: 15
+      recipient: FIU
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Quarterly Compliance Certificate"
+      frequency: quarterly
+      due_month_day: "Q+15"
+      recipient: HO
+      format: pdf
+      reminder_days: [14, 7, 3, 1]
+
+MKT:
+  name: "Marketing"
+  kpis:
+    - "New CASA accounts opened"
+    - "Campaign lead conversion %"
+    - "Digital channel new users"
+    - "Cross-sell product count"
+  returns:
+    - name: "Monthly Business Development Return"
+      frequency: monthly
+      due_day: 7
+      recipient: HO
+      format: excel
+      reminder_days: [5, 3, 1]
+    - name: "Quarterly Campaign Performance Report"
+      frequency: quarterly
+      due_month_day: "Q+10"
+      recipient: HO
+      format: pdf
+      reminder_days: [7, 3]
+
+LAW:
+  name: "Law Department"
+  kpis:
+    - "Pending civil suits count"
+    - "DRT/DRAT cases filed"
+    - "Cases decided in favour of bank %"
+    - "Empanelled advocate utilisation"
+    - "Legal notices issued vs target"
+  returns:
+    - name: "Monthly Legal Cases Status Return"
+      frequency: monthly
+      due_day: 10
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Quarterly DRT Cases Return"
+      frequency: quarterly
+      due_month_day: "Q+10"
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3]
+
+INS:
+  name: "Inspection"
+  kpis:
+    - "Branches inspected vs plan %"
+    - "High-risk branches pending inspection"
+    - "ATR submission compliance %"
+    - "IS audit branches covered"
+  returns:
+    - name: "Monthly Inspection Programme Return"
+      frequency: monthly
+      due_day: 5
+      recipient: HO
+      format: excel
+      reminder_days: [5, 3, 1]
+    - name: "Quarterly RBIA Summary Return"
+      frequency: quarterly
+      due_month_day: "Q+15"
+      recipient: HO
+      format: pdf
+      reminder_days: [14, 7, 3]
+
+RSK:
+  name: "Risk Management"
+  kpis:
+    - "Credit risk concentration by sector"
+    - "Operational risk incidents reported"
+    - "Gross NPA ratio"
+    - "Capital Adequacy Ratio (CRAR) %"
+    - "Stress test breach count"
+  returns:
+    - name: "Monthly Risk Dashboard Return"
+      frequency: monthly
+      due_day: 12
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Quarterly ICAAP Input Return"
+      frequency: quarterly
+      due_month_day: "Q+20"
+      recipient: HO
+      format: excel
+      reminder_days: [14, 7, 3]
+
+SME:
+  name: "MSME Division"
+  kpis:
+    - "MSME loan disbursements vs target"
+    - "CGTMSE guarantee accounts"
+    - "Udyam-linked accounts %"
+    - "MUDRA loan accounts (Shishu/Kishor/Tarun)"
+    - "ECLGS utilisation %"
+  returns:
+    - name: "Monthly MSME Disbursement Return"
+      frequency: monthly
+      due_day: 7
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Quarterly CGTMSE Utilisation Return"
+      frequency: quarterly
+      due_month_day: "Q+10"
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3]
+
+RET:
+  name: "Retail Department"
+  kpis:
+    - "Home loan disbursements vs target"
+    - "Vehicle loan accounts opened"
+    - "Education loan disbursements"
+    - "Retail NPA %"
+    - "Gold loan portfolio size"
+  returns:
+    - name: "Monthly Retail Portfolio Return"
+      frequency: monthly
+      due_day: 7
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3, 1]
+    - name: "Quarterly Retail NPA Return"
+      frequency: quarterly
+      due_month_day: "Q+10"
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3]
+
+RCC:
+  name: "Regional Computer Centre"
+  kpis:
+    - "CBS uptime %"
+    - "INFINET connectivity uptime %"
+    - "Patch compliance % (branches)"
+    - "BCP drill completion"
+    - "Pending IS audit observations"
+  returns:
+    - name: "Monthly CBS Uptime Return"
+      frequency: monthly
+      due_day: 5
+      recipient: HO
+      format: excel
+      reminder_days: [5, 3, 1]
+    - name: "Quarterly IS Audit Compliance Return"
+      frequency: quarterly
+      due_month_day: "Q+10"
+      recipient: HO
+      format: excel
+      reminder_days: [7, 3]

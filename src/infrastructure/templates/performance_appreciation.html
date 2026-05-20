@@ -1,0 +1,95 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<div class="letter-body" style="line-height: 1.6; margin-top: 20px; font-size: 14px; color: #1e293b;">
+    {% if branch_head %}
+    <p style="margin-bottom: 20px; line-height: 1.5;">
+        <span class="tamil-text" style="font-size: 13px;">{{ branch_head.sal_ta }} {{ branch_head.name_ta }}</span> / 
+        <span class="hindi-text" style="font-size: 13px;">{{ branch_head.sal_hi }} {{ branch_head.name_hi }}</span> / 
+        <strong>{{ branch_head.sal_en }} {{ branch_head.name }}</strong><br>
+        <span class="tamil-text" style="font-size: 11px;">{{ branch_head.desig_ta }}</span> / 
+        <span class="hindi-text" style="font-size: 11px;">{{ branch_head.desig_hi }}</span> / 
+        <span style="font-size: 12px; font-weight: 600; text-transform: uppercase;">{{ branch_head.desig_en }}</span><br>
+        
+        Indian Overseas Bank,<br>
+        {{ branch_name }} ({{ sol }})
+    </p>
+    {% else %}
+    <p>The Branch Manager,<br>
+    Indian Overseas Bank,<br>
+    {{ branch_name }} ({{ sol }})</p>
+    {% endif %}
+
+    <div class="doc-title" style="margin: 25px 0 15px 0; text-align: center;">
+        <h1 style="color: #21357f; font-size: 20px; text-decoration: none; margin: 0; font-weight: 800; letter-spacing: 1px;">LETTER OF APPRECIATION: {{ group_name.upper() }}</h1>
+    </div>
+
+    <div style="margin: 15px 0; border-left: 4px solid #10b981; padding-left: 15px; font-weight: 700; color: #21357f; text-transform: uppercase; font-size: 13px;">
+        Sub: Commendable Performance in {{ group_name }} - {{ month_year }}
+    </div>
+
+    <p style="margin-top: 15px;">Dear Sir/Madam,</p>
+
+    <p>It is with great pleasure that we record our appreciation for the commendable business performance demonstrated by <strong>{{ branch_name }} Branch</strong> for the month ended <strong>{{ month_year }}</strong>.</p>
+
+    <p>The branch has successfully achieved and exceeded the assigned budget targets in the following key parameters:</p>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px;">
+        <thead>
+            <tr style="background-color: #f0fdf4; border-bottom: 1px solid #cbd5e1;">
+                <th style="padding: 10px; text-align: left;">Parameter</th>
+                <th style="padding: 10px; text-align: right;">March 31st</th>
+                <th style="padding: 10px; text-align: right;">Actual</th>
+                <th style="padding: 10px; text-align: right;">Growth</th>
+                <th style="padding: 10px; text-align: right;">Budget</th>
+                <th style="padding: 10px; text-align: center;">% Achievement</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in achievements %}
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px; {% if not a.is_parent %}padding-left: 30px; font-style: italic; color: #475569;{% else %}font-weight: 700; color: #21357f;{% endif %}">
+                    {% if not a.is_parent %}└─ {% endif %}{{ a.parameter }}
+                </td>
+                <td style="padding: 10px; text-align: right;">{{ "%.2f"|format(a.fy_start_actual) }}</td>
+                <td style="padding: 10px; text-align: right; {% if a.is_parent %}font-weight: 700;{% endif %}">{{ "%.2f"|format(a.actual) }}</td>
+                <td style="padding: 10px; text-align: right; color: {% if a.fy_growth >= 0 %}#10b981{% else %}#ef4444{% endif %}; {% if a.is_parent %}font-weight: 700;{% endif %}">
+                    {{ "%.2f"|format(a.fy_growth) }}
+                </td>
+                <td style="padding: 10px; text-align: right; {% if a.is_parent %}font-weight: 700;{% endif %}">{{ "%.2f"|format(a.target) }}</td>
+                <td style="padding: 10px; text-align: center; font-weight: 700; color: {% if a.pct >= 100 %}#10b981{% else %}#64748b{% endif %};">
+                    {{ "%.1f"|format(a.pct) }}%
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>Achievement of budgets is a reflection of the dedicated marketing efforts and business focus of the entire team at your branch. We trust that you will maintain this momentum and strive for even higher levels of excellence in the coming months.</p>
+
+    <p style="margin-top: 15px;">Keep up the good work!</p>
+
+    <p style="margin-top: 25px;">Yours faithfully,</p>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="footer" style="margin-top: 30px; page-break-inside: avoid;">
+    <div style="float: right; width: 450px; text-align: center;">
+        <div style="border-top: 1px solid #cbd5e1; width: 400px; margin: 0 auto 10px auto;"></div>
+        
+        <div class="sig-name-row" style="font-size: 13px; color: #1e293b; margin-bottom: 5px; display: flex; justify-content: center; gap: 8px; align-items: baseline;">
+            <span class="tamil-text" style="font-size: 12px;">({{ signatory.name_ta }})</span>
+            <span class="hindi-text" style="font-size: 12px;">({{ signatory.name_hi }})</span>
+            <span style="font-weight: 600; text-transform: uppercase;">({{ signatory.name }})</span>
+        </div>
+
+        <div class="sig-desig-row" style="font-size: 11px; color: #475569; display: flex; justify-content: center; gap: 10px; align-items: baseline;">
+            <span class="tamil-text" style="font-size: 10px;">{{ signatory.desig_ta }}</span>
+            <span class="hindi-text" style="font-size: 10px;">{{ signatory.desig_hi }}</span>
+            <span style="font-weight: 600; text-transform: uppercase;">{{ signatory.desig_en }}</span>
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+{% endblock %}

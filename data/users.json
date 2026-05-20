@@ -1,0 +1,25 @@
+[
+  {
+    "username": "admin",
+    "role": "ADMIN",
+    "dept": "ALL"
+  },
+  {
+    "username": "63039",
+    "role": "ADMIN",
+    "dept": "ALL"
+  },
+  {
+    "username": "40412",
+    "role": "USER",
+    "dept": "ALL",
+    "depts": [
+      "ALL"
+    ],
+    "assigned_branches": [
+      "2706",
+      "0910",
+      "3437"
+    ]
+  }
+]

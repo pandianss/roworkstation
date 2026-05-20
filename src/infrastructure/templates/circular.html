@@ -1,0 +1,39 @@
+{% extends "base_premium.html" %}
+
+{% block content %}
+<div class="doc-title">
+    <h2 class="main-title">REGIONAL CIRCULAR / क्षेत्रीय परिपत्र</h2>
+</div>
+
+<div class="letter-body">
+    <div class="section-title">SUBJECT: {{ subject | upper }}</div>
+
+    <div class="rich-content {{ 'pre-wrap' if not is_html else '' }}" style="margin-bottom: 20px;">{{ body | safe }}</div>
+
+    {% if conclusion %}
+    <div class="rich-content {{ 'pre-wrap' if not is_html else '' }}" style="margin-bottom: 20px;">{{ conclusion | safe }}</div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="footer">
+    <div class="signatories-row">
+        <div class="signatory-col">
+            <div class="signature-space">Sd/-</div>
+            <div style="margin-bottom: 5px;">
+                <div class="sig-name-en tamil-text" style="font-size: 13px;">{{ sig.name_ta }}</div>
+                <div class="sig-name-en hindi-text" style="font-size: 13px;">{{ sig.name_hi }}</div>
+                <div class="sig-name-en">({{ sig.name }})</div>
+            </div>
+            <div class="sig-name-en" style="font-size: 10px; margin-top: 2px;">[{{ sig.roll }}]</div>
+            
+            <div style="margin-top: 10px;">
+                <div class="sig-trilingual tamil-text">{{ sig.desig_ta }}</div>
+                <div class="sig-trilingual hindi-text">{{ sig.desig_hi }}</div>
+                <div class="sig-trilingual">{{ sig.desig_en }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

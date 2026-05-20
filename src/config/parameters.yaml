@@ -1,0 +1,289 @@
+# ==============================================================================
+# CENTRAL PARAMETER REGISTRY: RO DINDIGUL
+# ==============================================================================
+# This file is the Single Source of Truth (SSOT) for all data mappings across:
+# - MIS Analysis & Snapshots
+# - Budget Tracking & Gaps
+# - Performance Letters (Appreciation/Explanation)
+# - Infographics & Presentations
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# ORGANIZATION & BRANDING
+# ------------------------------------------------------------------------------
+organization:
+  region_code: "3933"
+  region_name: "Dindigul"
+  bank_name:
+    en: "Indian Overseas Bank"
+    hi: "इण्डियन ओवरसीज़ बैंक"
+    ta: "இந்தியன் ஓவர்சீஸ் வங்கி"
+  office_name:
+    en: "Regional Office, Dindigul"
+    hi: "क्षेत्रीय कार्यालय, दिण्डुक्कल"
+    ta: "மண்டல அலுவலகம், திண்டுக்கல்"
+  financial_year_start: "04-01"
+
+contact:
+  address:
+    en: "80 Feet Road, Near Spencer Compound, Dindigul - 624001"
+    hi: "80 फीट रोड, स्पेंसर कंपाउंड के पास, डिंडीगुल - 624001"
+    ta: "80 அடி சாலை, ஸ்பென்சர் காம்பவுண்ட் அருகில், திண்டுக்கல் - 624001"
+  phone: "0451 4055195/198"
+  email: "3933ro@iob.bank.in"
+  website: "www.iob.bank.in"
+
+signatories:
+  default_rm:
+    name: "S. Satish Pandian"
+    name_hi: "एस. सतीश पांडियन"
+    name_ta: "எஸ். சதீஷ் பாண்டியன்"
+    desig_en: "Regional Manager"
+    desig_hi: "क्षेत्रीय प्रबंधक"
+    desig_ta: "மண்டல மேலாளர்"
+
+# ------------------------------------------------------------------------------
+# PARAMETER DEFINITIONS
+# ------------------------------------------------------------------------------
+# mis_col: The exact column name in the enriched MIS dataframe (Uppercase)
+# budget_code: The code used in the 'PARAMETER' column of budget Excel files
+# display_name: Human-readable name for reports and letters
+# category: Business segment (DEPOSITS, RETAIL, AGRI, MSME, etc.)
+# report_group: Logical group for letter generation (CASA, TD, MSME, etc.)
+# is_parent: If true, this represents a group total (e.g., CASA = SB + CD)
+# subsets: List of IDs that are part of this parent (for breakdown tables)
+# ------------------------------------------------------------------------------
+
+parameters:
+  # --- DEPOSITS ---
+  - id: casa
+    mis_col: "CASA"
+    budget_code: "CASA"
+    display_name: "CASA"
+    category: "DEPOSITS"
+    report_group: "CASA"
+    is_parent: true
+    subsets: ["sb", "cd"]
+
+  - id: sb
+    mis_col: "SB"
+    budget_code: "SB"
+    display_name: "SB"
+    category: "DEPOSITS"
+    parent_id: casa
+
+  - id: cd
+    mis_col: "CD"
+    budget_code: "CD"
+    display_name: "CD"
+    category: "DEPOSITS"
+    parent_id: casa
+
+  - id: td
+    mis_col: "TD"
+    budget_code: "TD"
+    display_name: "TD"
+    category: "DEPOSITS"
+    report_group: "TD"
+    is_parent: true
+    subsets: ["ret_td"]
+
+  - id: ret_td
+    mis_col: "RET TD"
+    budget_code: "Ret_TD"
+    display_name: "RET TD"
+    category: "DEPOSITS"
+    parent_id: td
+
+  - id: total_deposits
+    mis_col: "TOTAL DEPOSITS"
+    budget_code: "Tot_Dep"
+    display_name: "Total Deposits"
+    category: "DEPOSITS"
+
+  # --- RETAIL ADVANCES ---
+  - id: core_retail
+    mis_col: "CORE RETAIL"
+    budget_code: "Core Ret"
+    display_name: "Core Retail"
+    category: "RETAIL"
+    report_group: "Core Ret"
+    is_parent: true
+    subsets: ["housing", "vehicle", "personal", "education", "mortgage", "liquirent", "other_retail"]
+
+  - id: housing
+    mis_col: "HOUSING"
+    budget_code: "HL"
+    display_name: "Housing Loan"
+    category: "RETAIL"
+    parent_id: core_retail
+    nil_sanction_key: "Housing"
+
+  - id: vehicle
+    mis_col: "VEHICLE"
+    budget_code: "VL"
+    display_name: "Vehicle Loan"
+    category: "RETAIL"
+    parent_id: core_retail
+    nil_sanction_key: "Vehicle"
+
+  - id: personal
+    mis_col: "PERSONAL"
+    budget_code: "PL"
+    display_name: "Personal Loan"
+    category: "RETAIL"
+    parent_id: core_retail
+
+  - id: education
+    mis_col: "EDUCATION"
+    budget_code: "EL"
+    display_name: "Education Loan"
+    category: "RETAIL"
+    parent_id: core_retail
+
+  - id: mortgage
+    mis_col: "MORTGAGE"
+    budget_code: "Mort"
+    display_name: "Mortgage Loan"
+    category: "RETAIL"
+    parent_id: core_retail
+
+  - id: liquirent
+    mis_col: "LIQUIRENT"
+    budget_code: "Liq"
+    display_name: "Liquirent"
+    category: "RETAIL"
+    parent_id: core_retail
+
+  - id: other_retail
+    mis_col: "OTHER RETAIL"
+    budget_code: "OthRet"
+    display_name: "Other Retail"
+    category: "RETAIL"
+    parent_id: core_retail
+
+  - id: total_retail
+    mis_col: "TOTAL RETAIL"
+    budget_code: "Ret"
+    display_name: "Total Retail"
+    category: "RETAIL"
+
+  # --- MSME ---
+  - id: msme
+    mis_col: "MSME"
+    budget_code: "MSME"
+    display_name: "MSME"
+    category: "MSME"
+    report_group: "MSME"
+    is_parent: true
+    subsets: ["mudra"]
+
+  - id: mudra
+    mis_col: "MUDRA"
+    budget_code: "Mudra"
+    display_name: "Mudra"
+    category: "MSME"
+    parent_id: msme
+
+  # --- AGRI ADVANCES ---
+  - id: core_agri
+    mis_col: "CORE AGRI"
+    budget_code: "Core_Agri"
+    display_name: "Core Agri"
+    category: "AGRI"
+    report_group: "Core Agri"
+    is_parent: true
+    subsets: ["kcc", "shg", "govt_spon", "oth_schematic"]
+
+  - id: kcc
+    mis_col: "KCC"
+    budget_code: "KCC"
+    display_name: "KCC"
+    category: "AGRI"
+    parent_id: core_agri
+
+  - id: shg
+    mis_col: "SHG"
+    budget_code: "SHG"
+    display_name: "SHG"
+    category: "AGRI"
+    parent_id: core_agri
+
+  - id: govt_spon
+    mis_col: "GOVT SPON"
+    budget_code: "Gov"
+    display_name: "Govt Sponsored"
+    category: "AGRI"
+    parent_id: core_agri
+
+  - id: oth_schematic
+    mis_col: "OTH SCHEMATIC"
+    budget_code: "OthSch"
+    display_name: "Other Schematic"
+    category: "AGRI"
+    parent_id: core_agri
+
+  # --- JEWEL LOANS ---
+  - id: gold
+    mis_col: "GOLD"
+    budget_code: "Gold"
+    display_name: "Jewel Loan"
+    category: "JEWEL LOAN"
+    report_group: "Jewel Loan"
+    is_parent: true
+    subsets: ["agri_jl", "retail_jl"]
+
+  - id: agri_jl
+    mis_col: "AGRI JL"
+    budget_code: "Agri_JL"
+    display_name: "Agri JL"
+    category: "JEWEL LOAN"
+    parent_id: gold
+
+  - id: retail_jl
+    mis_col: "RETAIL JL"
+    budget_code: "Ret-Gold"
+    display_name: "Retail JL"
+    category: "JEWEL LOAN"
+    parent_id: gold
+
+  # --- OVERALL ---
+  - id: total_advances
+    mis_col: "ADV"
+    budget_code: "Adv"
+    display_name: "Total Advances"
+    category: "OVERALL"
+
+  - id: business
+    mis_col: "BUS"
+    budget_code: "Bus"
+    display_name: "Total Business"
+    category: "OVERALL"
+
+  - id: npa
+    mis_col: "NPA"
+    budget_code: "NPA"
+    display_name: "NPA Amount"
+    category: "OVERALL"
+
+# ------------------------------------------------------------------------------
+# NIL SANCTION TRIGGERS
+# ------------------------------------------------------------------------------
+# Defines products where zero new sanctions in a month triggers an explanation letter.
+# Each entry can map to one or more scheme codes or categories.
+# ------------------------------------------------------------------------------
+nil_sanctions:
+  - id: housing
+    display_name: "Housing Loans"
+    target_categories: ["Housing"] # Matches l2_sector in advances_records
+    active: true
+
+  - id: vehicle
+    display_name: "Vehicle Loans"
+    target_categories: ["Vehicle"]
+    active: true
+# ------------------------------------------------------------------------------
+# INFRASTRUCTURE & EXTERNAL TOOLS
+# ------------------------------------------------------------------------------
+infrastructure:
+  browser_path: "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
