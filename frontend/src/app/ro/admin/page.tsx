@@ -304,6 +304,12 @@ export default function AdminPage() {
   const [unitsQuery, setUnitsQuery] = useState("");
   const [unitsLoading, setUnitsLoading] = useState(false);
 
+  // mis upload states
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadResult, setUploadResult] = useState<string | null>(null);
+
   // ── Effects ─────────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -451,6 +457,40 @@ export default function AdminPage() {
       setIngestError(e instanceof Error ? e.message : "Network error");
     } finally {
       setIngestLoading(false);
+    }
+  }
+
+  async function handleUpload(e: React.FormEvent) {
+    e.preventDefault();
+    if (!uploadFile) return;
+    setUploadLoading(true);
+    setUploadError(null);
+    setUploadResult(null);
+    try {
+      const pwd = typeof window !== "undefined" ? sessionStorage.getItem("ro_admin_password") || "" : "";
+      const formData = new FormData();
+      formData.append("file", uploadFile);
+
+      const r = await fetch(`${API_BASE}/api/admin/mis/upload`, {
+        method: "POST",
+        headers: {
+          "X-Admin-Password": pwd,
+        },
+        body: formData,
+      });
+      const d = await r.json();
+      if (r.ok) {
+        setUploadResult(d.message || `Successfully uploaded ${uploadFile.name}`);
+        setUploadFile(null);
+        loadMisFiles();
+        loadStats();
+      } else {
+        setUploadError(d.detail || "Upload failed");
+      }
+    } catch (e: unknown) {
+      setUploadError(e instanceof Error ? e.message : "Network error");
+    } finally {
+      setUploadLoading(false);
     }
   }
 
@@ -832,15 +872,114 @@ export default function AdminPage() {
         ══════════════════════════════════════════════════════════════ */}
         {tab === "mis" && (
           <>
-            {/* Ingest trigger */}
-            <div className="section-header">
-              <h2>📥 MIS Ingestion</h2>
-            </div>
+            {/* File Picker / Upload Zone */}
             <div className="card" style={{ padding: "1.5rem", marginBottom: "1.5rem" }}>
-              <h3 style={{ marginBottom: "0.5rem" }}>Trigger Ingestion</h3>
+              <h3 style={{ marginBottom: "0.5rem" }}>Upload MIS Excel File</h3>
               <p style={{ fontSize: "0.85rem", marginBottom: "1.25rem" }}>
-                Scans the <code style={{ background: "var(--color-surface-3)", padding: "1px 6px", borderRadius: 4 }}>files/</code> directory for new MIS Excel files and ingests them into the database.
-                Files already ingested are skipped unless forced.
+                Select a local MIS Excel spreadsheet (`.xlsx`) to upload and ingest directly.
+              </p>
+              
+              <form onSubmit={handleUpload}>
+                <div 
+                  style={{ 
+                    border: "2px dashed var(--color-border)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "2rem",
+                    textAlign: "center",
+                    background: "var(--color-surface-2)",
+                    marginBottom: "1rem",
+                    cursor: "pointer",
+                    transition: "border-color var(--duration-fast)"
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (e.dataTransfer.files?.[0]) {
+                      setUploadFile(e.dataTransfer.files[0]);
+                    }
+                  }}
+                  onClick={() => document.getElementById("mis-file-input")?.click()}
+                >
+                  <input
+                    id="mis-file-input"
+                    type="file"
+                    accept=".xlsx"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        setUploadFile(e.target.files[0]);
+                      }
+                    }}
+                    style={{ display: "none" }}
+                  />
+                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📁</div>
+                  {uploadFile ? (
+                    <div>
+                      <div style={{ fontWeight: 600, color: "var(--color-text)" }}>
+                        {uploadFile.name}
+                      </div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--color-text-faint)", marginTop: 4 }}>
+                        {(uploadFile.size / 1024 / 1024).toFixed(2)} MB
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div style={{ fontWeight: 600, color: "var(--color-text-muted)" }}>
+                        Drag & drop your Excel file here, or click to browse
+                      </div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--color-text-faint)", marginTop: 4 }}>
+                        Supports only .xlsx spreadsheet formats
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                  <button
+                    type="submit"
+                    className={styles.btnPrimary}
+                    disabled={uploadLoading || !uploadFile}
+                    style={{ opacity: (uploadLoading || !uploadFile) ? 0.7 : 1 }}
+                  >
+                    {uploadLoading ? "⟳ Uploading & Ingesting…" : "📤 Upload & Ingest"}
+                  </button>
+                  {uploadFile && (
+                    <button
+                      type="button"
+                      onClick={() => setUploadFile(null)}
+                      style={{
+                        padding: "0.6rem 1rem",
+                        background: "rgba(255,255,255,0.05)",
+                        border: "1px solid var(--color-border)",
+                        borderRadius: "var(--radius-md)",
+                        color: "var(--color-text-muted)",
+                        fontSize: "0.85rem",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Clear Selection
+                    </button>
+                  )}
+                </div>
+              </form>
+
+              {uploadResult && (
+                <div className={`${styles.alert} ${styles.alertSuccess}`} style={{ marginTop: "1rem" }}>
+                  ✅ {uploadResult}
+                </div>
+              )}
+              {uploadError && (
+                <div className={`${styles.alert} ${styles.alertError}`} style={{ marginTop: "1rem" }}>
+                  ❌ {uploadError}
+                </div>
+              )}
+            </div>
+
+            {/* Scan Server Directory (Server-side fallback) */}
+            <div className="card" style={{ padding: "1.5rem", marginBottom: "1.5rem" }}>
+              <h3 style={{ marginBottom: "0.5rem" }}>Scan Server Directory</h3>
+              <p style={{ fontSize: "0.85rem", marginBottom: "1.25rem" }}>
+                Alternative: Scan the server-side <code style={{ background: "var(--color-surface-3)", padding: "1px 6px", borderRadius: 4 }}>files/</code> directory directly for new MIS Excel files.
               </p>
               <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
                 <button
@@ -849,7 +988,7 @@ export default function AdminPage() {
                   disabled={ingestLoading}
                   style={{ opacity: ingestLoading ? 0.7 : 1 }}
                 >
-                  {ingestLoading ? "⟳ Ingesting…" : "📥 Ingest New Files"}
+                  {ingestLoading ? "⟳ Scanning…" : "🔍 Scan & Ingest Server Files"}
                 </button>
               </div>
               {ingestResult && (
