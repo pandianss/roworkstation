@@ -1,6 +1,5 @@
 from __future__ import annotations
 from typing import Dict, List, Any
-import streamlit as st
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from src.infrastructure.persistence.database import engine
@@ -21,8 +20,7 @@ class MilestoneService:
     def __init__(self, session: Session):
         self.session = session
 
-    @st.cache_data(show_spinner=False)
-    def get_milestone_achievements(_self, target_date=None) -> List[Dict[str, Any]]:
+    def get_milestone_achievements(self, target_date=None) -> List[Dict[str, Any]]:
         """Identifies branches that crossed a NEW milestone during the month of target_date."""
         import datetime
         if target_date:
@@ -32,36 +30,36 @@ class MilestoneService:
             
             # Find the actual last reporting date in the requested month
             next_month = (target_date.replace(day=1) + datetime.timedelta(days=32)).replace(day=1)
-            latest_date = _self.session.query(func.max(MISRecordModel.date)).filter(
+            latest_date = self.session.query(func.max(MISRecordModel.date)).filter(
                 MISRecordModel.date >= target_date.replace(day=1),
                 MISRecordModel.date < next_month
             ).scalar()
         else:
-            latest_date = _self.session.query(func.max(MISRecordModel.date)).scalar()
+            latest_date = self.session.query(func.max(MISRecordModel.date)).scalar()
             
         if not latest_date:
             return []
             
         # Previous month end to establish baseline
         prev_month_end = latest_date.replace(day=1) - datetime.timedelta(days=1)
-        prev_date = _self.session.query(func.max(MISRecordModel.date)).filter(MISRecordModel.date <= prev_month_end).scalar()
+        prev_date = self.session.query(func.max(MISRecordModel.date)).filter(MISRecordModel.date <= prev_month_end).scalar()
         
         # Load baseline levels
-        branches = _self.session.query(MasterRecordModel).filter(MasterRecordModel.category == 'UNIT').all()
+        branches = self.session.query(MasterRecordModel).filter(MasterRecordModel.category == 'UNIT').all()
         branch_map = {b.code: b.name_en for b in branches}
         
         baseline_levels = {}
         if prev_date:
-            prev_recs = _self.session.query(MISRecordModel).filter(MISRecordModel.date == prev_date).all()
+            prev_recs = self.session.query(MISRecordModel).filter(MISRecordModel.date == prev_date).all()
             for r in prev_recs:
-                vals = _self._calculate_parameters(r)
-                baseline_levels[r.sol] = {p: _self._get_milestone_level(vals.get(p, 0.0)) for p in _self.PARAMETERS}
+                vals = self._calculate_parameters(r)
+                baseline_levels[r.sol] = {p: self._get_milestone_level(vals.get(p, 0.0)) for p in self.PARAMETERS}
                 # Also store actual values for previous_value reporting
-                for p in _self.PARAMETERS:
+                for p in self.PARAMETERS:
                     baseline_levels[r.sol][p + "_VAL"] = vals.get(p, 0.0)
 
         # Find all reporting dates in the current month, sorted ascending
-        curr_month_dates = _self.session.query(MISRecordModel.date)\
+        curr_month_dates = self.session.query(MISRecordModel.date)\
             .filter(MISRecordModel.date > prev_month_end)\
             .filter(MISRecordModel.date <= latest_date)\
             .distinct().order_by(MISRecordModel.date.asc()).all()
@@ -71,25 +69,25 @@ class MilestoneService:
         recognized = set() # (sol, parameter, milestone)
 
         for (d_date,) in curr_month_dates:
-            recs = _self.session.query(MISRecordModel).filter(MISRecordModel.date == d_date).all()
+            recs = self.session.query(MISRecordModel).filter(MISRecordModel.date == d_date).all()
             
             # 1. Regional Milestone Check (Aggregate of all branches)
             regional_totals = {}
             for r in recs:
                 if r.sol == 3933: continue
-                vals = _self._calculate_parameters(r)
+                vals = self._calculate_parameters(r)
                 for p, v in vals.items():
                     regional_totals[p] = regional_totals.get(p, 0.0) + v
             
             for param, reg_val in regional_totals.items():
                 # Regional milestones use larger increments (e.g. 500Cr or just any 50Cr jump)
                 # But for now, we'll use the same 50Cr logic as branches for consistency
-                reg_level = _self._get_milestone_level(reg_val)
+                reg_level = self._get_milestone_level(reg_val)
                 
                 # We need a baseline for the region too
                 # For simplicity, we'll calculate it on the fly or from baseline_levels
                 prev_reg_val = sum(baseline_levels.get(sol_code, {}).get(param + "_VAL", 0.0) for sol_code in baseline_levels if sol_code != 3933)
-                prev_reg_level = _self._get_milestone_level(prev_reg_val)
+                prev_reg_level = self._get_milestone_level(prev_reg_val)
                 
                 if reg_level > prev_reg_level and reg_level >= 50:
                     key = ("REGION", param, reg_level)
@@ -109,11 +107,11 @@ class MilestoneService:
             # 2. Individual Branch Milestone Check
             for r in recs:
                 if r.sol == 3933: continue
-                curr_vals = _self._calculate_parameters(r)
+                curr_vals = self._calculate_parameters(r)
                 
-                for param in _self.PARAMETERS:
+                for param in self.PARAMETERS:
                     curr_val = curr_vals.get(param, 0.0)
-                    curr_level = _self._get_milestone_level(curr_val)
+                    curr_level = self._get_milestone_level(curr_val)
                     
                     prev_level = baseline_levels.get(r.sol, {}).get(param, 0)
                     
@@ -133,23 +131,22 @@ class MilestoneService:
                             recognized.add(key)
         return achievements
 
-    @st.cache_data(show_spinner=False)
-    def get_all_at_milestones(_self) -> List[Dict[str, Any]]:
+    def get_all_at_milestones(self) -> List[Dict[str, Any]]:
         """Returns all branches currently at any milestone level for all parameters."""
-        latest_date = _self.session.query(func.max(MISRecordModel.date)).scalar()
+        latest_date = self.session.query(func.max(MISRecordModel.date)).scalar()
         if not latest_date:
             return []
             
-        recs = _self.session.query(MISRecordModel).filter(MISRecordModel.date == latest_date).all()
-        branches = _self.session.query(MasterRecordModel).filter(MasterRecordModel.category == 'UNIT').all()
+        recs = self.session.query(MISRecordModel).filter(MISRecordModel.date == latest_date).all()
+        branches = self.session.query(MasterRecordModel).filter(MasterRecordModel.category == 'UNIT').all()
         branch_map = {b.code: b.name_en for b in branches}
         
         results = []
         for r in recs:
             if r.sol == 3933: continue
-            vals = _self._calculate_parameters(r)
+            vals = self._calculate_parameters(r)
             for param, val in vals.items():
-                level = _self._get_milestone_level(val)
+                level = self._get_milestone_level(val)
                 if level >= 50:
                     results.append({
                         "sol": r.sol,

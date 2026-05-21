@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import {
   getMISData, getUnits, getDepartments,
-  getCirculars, getCampaigns,
+  getCirculars, getCampaigns, getMe,
   formatCrore,
   type MISRecord,
 } from "@/lib/api";
@@ -15,6 +16,15 @@ import styles from "@/styles/components.module.css";
 
 interface Props {
   params: Promise<{ sol: string }>;
+}
+
+function progressPct(start: string, end: string): number {
+  const s   = new Date(start).getTime();
+  const e   = new Date(end).getTime();
+  const now = Date.now();
+  if (now <= s) return 0;
+  if (now >= e) return 100;
+  return Math.round(((now - s) / (e - s)) * 100);
 }
 
 async function getData(sol: string) {
@@ -68,9 +78,22 @@ function computeBranchTrend(branchData: MISRecord[]) {
     }));
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { sol } = await params;
+  const { unit } = await getData(sol);
+  const branchName = unit?.Name ?? `Branch SOL ${sol}`;
+  return {
+    title: `${branchName} | Branch Portal`,
+    description: `MIS performance snapshot, circulars, and ongoing campaigns for Dindigul Regional Office ${branchName} (SOL ${sol}).`,
+  };
+}
+
 export default async function BranchPortalPage({ params }: Props) {
   const { sol } = await params;
-  const { branchData, unit, depts, circulars, campaigns, solNum } = await getData(sol);
+  const [{ branchData, unit, depts, circulars, campaigns, solNum }, user] = await Promise.all([
+    getData(sol),
+    getMe(),
+  ]);
 
   if (!unit && branchData.length === 0) notFound();
 
@@ -83,7 +106,7 @@ export default async function BranchPortalPage({ params }: Props) {
 
   return (
     <>
-      <NavBar activePage="branch" sol={sol} />
+      <NavBar activePage="branch" sol={sol} user={user} />
 
       <main className="container">
         {/* ── BRANCH HERO ──────────────────────────────────────── */}
@@ -172,7 +195,7 @@ export default async function BranchPortalPage({ params }: Props) {
                     <strong>Target:</strong> ₹{c.target_value} Cr
                   </div>
                   <div className={styles.progressTrack}>
-                    <div className={styles.progressFill} style={{ width: "65%" }} />
+                    <div className={styles.progressFill} style={{ width: `${progressPct(c.start_date, c.end_date)}%` }} />
                   </div>
                   <div style={{ fontSize: "0.72rem", color: "var(--color-text-faint)", marginTop: "4px" }}>Campaign in progress</div>
                 </div>

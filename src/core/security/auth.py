@@ -10,14 +10,9 @@ from src.domain.schemas import UserAccess
 
 def resolve_current_user() -> UserAccess:
     """Resolve the current workstation user with admin override support."""
-    import streamlit as st
     import getpass
     
-    # Prioritize manual login if it exists, otherwise fallback to OS user
-    if "manual_login_user" in st.session_state and st.session_state["manual_login_user"]:
-        username = st.session_state["manual_login_user"]
-    else:
-        username = getpass.getuser()
+    username = getpass.getuser()
         
     session_service = SessionService()
     admin_service = AdminService()

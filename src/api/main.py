@@ -2,7 +2,20 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.core.config.config_loader import get_app_settings
-from src.api.routes import mis_routes, master_routes, circular_routes, achievement_routes, campaign_routes, communication_routes, content_routes
+from src.api.routes import (
+    mis_routes,
+    master_routes,
+    circular_routes,
+    achievement_routes,
+    campaign_routes,
+    communication_routes,
+    content_routes,
+    auth_routes,
+    anniversary_routes,
+    guardian_routes,
+    performance_routes,
+    admin_routes,
+)
 
 app_settings = get_app_settings()
 
@@ -29,6 +42,11 @@ app.include_router(achievement_routes.router,  prefix="/api/achievements", tags=
 app.include_router(campaign_routes.router,        prefix="/api/campaigns",       tags=["Campaigns"])
 app.include_router(communication_routes.router,  prefix="/api/communications",  tags=["Communications"])
 app.include_router(content_routes.router,      prefix="/api/content",      tags=["Static Content"])
+app.include_router(auth_routes.router,         prefix="/api/auth",         tags=["Auth"])
+app.include_router(anniversary_routes.router,  prefix="/api/anniversary",  tags=["Anniversary"])
+app.include_router(guardian_routes.router,     prefix="/api/guardian",     tags=["Guardian"])
+app.include_router(performance_routes.router,  prefix="/api/performance",  tags=["Performance"])
+app.include_router(admin_routes.router,        prefix="/api/admin",        tags=["Admin"])
 
 
 @app.get("/api/health")

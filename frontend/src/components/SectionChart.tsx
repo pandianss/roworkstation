@@ -3,7 +3,7 @@
 import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  LineChart, Line, Area, AreaChart,
+  Area, AreaChart,
 } from "recharts";
 
 interface ChartData {

@@ -2,7 +2,7 @@
 
 RO Workstation is an offline-first regional office banking operations dashboard for MIS analytics, compliance returns, document generation, branch coordination, knowledge management, and administrative workflows.
 
-Built for Indian Public Sector Bank regional office teams, it combines a Streamlit interface with layered Python services, local repositories, and production-friendly deployment paths for restricted or internal network environments.
+Built for Indian Public Sector Bank regional office teams, it combines a FastAPI backend service layer with a Next.js frontend web app, local repositories, and production-friendly deployment paths for restricted or internal network environments.
 
 ## Documentation
 
@@ -18,8 +18,15 @@ Detailed documentation is available in the `docs/` directory:
 
 ### Running Locally
 
+To run the backend:
 ```bash
-python -m streamlit run app.py
+python -m uvicorn src.api.main:app --reload --port 8000
+```
+
+To run the frontend:
+```bash
+cd frontend
+npm run dev
 ```
 
 ### Running with Docker

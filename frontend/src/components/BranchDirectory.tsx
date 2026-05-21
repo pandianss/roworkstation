@@ -35,6 +35,7 @@ export default function BranchDirectory({ units }: BranchDirectoryProps) {
           placeholder="Search by Branch Name, SOL Code, or District…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          aria-label="Search branches by name, SOL, or district"
         />
       </div>
 
@@ -47,7 +48,7 @@ export default function BranchDirectory({ units }: BranchDirectoryProps) {
       {query.trim() !== "" && filtered.length === 0 && (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>🔍</div>
-          <span>No branches match <strong>"{query}"</strong></span>
+          <span>No branches match <strong>&quot;{query}&quot;</strong></span>
         </div>
       )}
 

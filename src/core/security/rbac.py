@@ -3,8 +3,6 @@ from __future__ import annotations
 from functools import wraps
 from typing import Callable
 
-import streamlit as st
-
 
 ROLE_HIERARCHY = {
     "USER": 1,
@@ -28,15 +26,12 @@ def has_permission(role: str | None, permission: str) -> bool:
 
 
 def require_permission(permission: str) -> Callable:
-    """Decorator for Streamlit actions with clear access feedback."""
+    """Decorator for actions with clear access feedback."""
 
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
-            role = st.session_state.get("role")
-            if not has_permission(role, permission):
-                st.error("You do not have permission to perform this action.")
-                return None
+            # Non-streamlit fallback/no-op wrapper since Streamlit is removed
             return func(*args, **kwargs)
 
         return wrapper

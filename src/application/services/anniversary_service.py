@@ -3,7 +3,6 @@ import datetime
 import logging
 import math
 from typing import List, Dict, Any
-import streamlit as st
 from src.infrastructure.persistence.master_repository import MasterRepository
 
 logger = logging.getLogger(__name__)
@@ -12,10 +11,9 @@ class AnniversaryService:
     def __init__(self, repo: MasterRepository | None = None) -> None:
         self.repo = repo or MasterRepository()
 
-    @st.cache_data(ttl=3600) # Cache for 1 hour
-    def get_upcoming_anniversaries(_self, days: int = 15) -> List[Dict[str, Any]]:
+    def get_upcoming_anniversaries(self, days: int = 15) -> List[Dict[str, Any]]:
         """Finds units celebrating anniversaries in the next N days."""
-        units = _self.repo.get_by_category("UNIT")
+        units = self.repo.get_by_category("UNIT")
         today = datetime.date.today()
         upcoming = []
 
@@ -65,10 +63,9 @@ class AnniversaryService:
         except (TypeError, ValueError):
             return 0
 
-    @st.cache_data(ttl=3600)
-    def get_staff_celebrations(_self, days: int = 3) -> List[Dict[str, Any]]:
+    def get_staff_celebrations(self, days: int = 3) -> List[Dict[str, Any]]:
         """Finds staff with upcoming birthdays or retirement in the next N days."""
-        staff_list = _self.repo.get_by_category("STAFF")
+        staff_list = self.repo.get_by_category("STAFF")
         today = datetime.date.today()
         celebrations = []
 
@@ -79,7 +76,7 @@ class AnniversaryService:
             
             # 1. Check Birthday
             if dob_str and dob_str != "nan":
-                dob = _self._parse_date(dob_str)
+                dob = self._parse_date(dob_str)
                 if dob:
                     bday_this_year = dob.replace(year=today.year)
                     if bday_this_year < today:
@@ -100,7 +97,7 @@ class AnniversaryService:
 
             # 2. Check Retirement
             if dor_str and dor_str != "nan":
-                dor = _self._parse_date(dor_str)
+                dor = self._parse_date(dor_str)
                 if dor:
                     diff = (dor - today).days
                     if 0 <= diff <= days:

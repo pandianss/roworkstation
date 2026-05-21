@@ -281,12 +281,12 @@ class DocumentEngine:
     def resolve_staff(self, identifier: str) -> Dict[str, Any]:
         """Resolve roll number or name to trilingual signatory details. Optimized with caching."""
         identifier = str(identifier)
-        from src.interface.streamlit.state.services import get_master_service
+        from src.infrastructure.persistence.master_repository import MasterRepository
         from src.application.services.translation_service import DesignationMapper
         
         try:
-            svc = get_master_service()
-            staff_records = svc.get_by_category("STAFF")
+            repo = MasterRepository()
+            staff_records = repo.get_by_category("STAFF")
             found = next((s for s in staff_records if s.code == identifier or s.name_en == identifier or f"{s.name_en} ({s.metadata.get('designation')})" == identifier), None)
             
             if found:

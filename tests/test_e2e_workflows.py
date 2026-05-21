@@ -18,10 +18,7 @@ class TestE2EWorkflows(unittest.TestCase):
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
         
-        # Clear Streamlit cache completely before each test to prevent cross-test data pollution
-        from streamlit import cache_data, cache_resource
-        cache_data.clear()
-        cache_resource.clear()
+
         
         # 1. Seed Branch Master Data
         branch = MasterRecordModel(

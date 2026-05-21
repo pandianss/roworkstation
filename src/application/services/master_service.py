@@ -4,7 +4,6 @@ import os
 import json
 import logging
 import pandas as pd
-import streamlit as st
 from src.core.paths import project_path
 from src.core.config.config_loader import get_app_settings
 from src.application.services.translation_service import SalutationMapper, DesignationMapper
@@ -27,17 +26,14 @@ class MasterService:
         return self.repo.get_by_category(category)
 
     # Delegated Data Methods
-    @st.cache_data(show_spinner=False, ttl=3600)
-    def get_units_frame(_self) -> pd.DataFrame:
-        return _self.data_service.get_units_frame()
+    def get_units_frame(self) -> pd.DataFrame:
+        return self.data_service.get_units_frame()
 
-    @st.cache_data(show_spinner=False, ttl=3600)
-    def get_departments_frame(_self) -> pd.DataFrame:
-        return _self.data_service.get_departments_frame()
+    def get_departments_frame(self) -> pd.DataFrame:
+        return self.data_service.get_departments_frame()
 
-    @st.cache_data(show_spinner=False, ttl=3600)
-    def get_staff_frame(_self) -> pd.DataFrame:
-        return _self.data_service.get_staff_frame()
+    def get_staff_frame(self) -> pd.DataFrame:
+        return self.data_service.get_staff_frame()
 
     # Delegated Sync Methods
     def sync_staff_from_csv(self) -> None:
@@ -123,13 +119,6 @@ class MasterService:
         state_path.parent.mkdir(parents=True, exist_ok=True)
         with open(state_path, "w", encoding="utf-8") as f:
             json.dump(state, f)
-        
-        # Invalidate Streamlit cache if in Streamlit context
-        try:
-            import streamlit as st
-            st.cache_data.clear()
-        except Exception as exc:
-            logger.debug("Streamlit cache clear skipped: %s", exc)
 
     # Unit Management Logic
     def update_unit_authorities(self, code: str, head_roll: str | None, second_roll: str | None, eff_date: str) -> bool:
@@ -293,11 +282,10 @@ class MasterService:
             os.rename(temp_path, csv_path)
 
     # Staff Management Logic
-    @st.cache_data(show_spinner=False, ttl=3600)
-    def get_ro_executives(_self) -> list[dict[str, str]]:
-        staff = _self.get_by_category("STAFF")
+    def get_ro_executives(self) -> list[dict[str, str]]:
+        staff = self.get_by_category("STAFF")
         execs = []
-        region_code = _self.settings.region_code
+        region_code = self.settings.region_code
         for s in staff:
             meta = s.metadata or {}
             if str(meta.get("sol")) == region_code:

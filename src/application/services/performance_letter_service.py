@@ -2,7 +2,6 @@ from __future__ import annotations
 import datetime
 from typing import Dict, List, Any
 import pandas as pd
-import streamlit as st
 from src.infrastructure.persistence.budget_repository import BudgetRepository
 from src.infrastructure.persistence.advances_repository import AdvancesRepository
 from src.application.use_cases.mis.service import MISAnalyticsService
@@ -40,14 +39,13 @@ class PerformanceLetterService:
         """Retrieve budget target for a single param and branch."""
         return self.budget_repo.get_target(param, year_month, sols=[sol])
 
-    @st.cache_data(show_spinner=False)
-    def get_branch_performance(_self, selected_date: datetime.date) -> List[Dict[str, Any]]:
+    def get_branch_performance(self, selected_date: datetime.date) -> List[Dict[str, Any]]:
         """Analyses all branches for budget achievement or decline, group by group."""
         # Determine FY start (Previous March 31st)
         fy_start_date = get_fy_start(selected_date)
         prev_ye_date = fy_start_date - datetime.timedelta(days=1)
 
-        df = _self.analytics_service.get_data(start_date=prev_ye_date, end_date=selected_date)
+        df = self.analytics_service.get_data(start_date=prev_ye_date, end_date=selected_date)
         if df.empty:
             return []
 
@@ -85,7 +83,7 @@ class PerformanceLetterService:
                 "groups": {},
             }
 
-            for group_name, cfg in _self.PARAM_GROUPS.items():
+            for group_name, cfg in self.PARAM_GROUPS.items():
                 parent_col = cfg["parent"]
                 all_params = [parent_col] + cfg["subsets"]
                 
@@ -95,9 +93,9 @@ class PerformanceLetterService:
                 has_decline = False
 
                 for param in all_params:
-                    actual = _self._get_actual(row, param)
-                    target = _self._get_target(param, ym, int(sol))
-                    fy_start_actual = _self._get_actual(prev_ye_row, param) if prev_ye_row is not None else 0
+                    actual = self._get_actual(row, param)
+                    target = self._get_target(param, ym, int(sol))
+                    fy_start_actual = self._get_actual(prev_ye_row, param) if prev_ye_row is not None else 0
                     fy_growth = actual - fy_start_actual
 
                     # Calculate percentage, handle division by zero
@@ -140,9 +138,8 @@ class PerformanceLetterService:
 
         return results
 
-    @st.cache_data(show_spinner=False)
     def get_nil_sanction_branches(
-        _self, selected_date: datetime.date, advances_report_dt: datetime.date
+        self, selected_date: datetime.date, advances_report_dt: datetime.date
     ) -> List[Dict[str, Any]]:
         """
         Detects branches with NIL sanctions (zero new accounts opened) under Housing and
@@ -164,7 +161,7 @@ class PerformanceLetterService:
         else:
             month_end = selected_date.replace(month=selected_date.month + 1, day=1)
 
-        adv_df = _self.advances_repo.get_records_by_date(advances_report_dt)
+        adv_df = self.advances_repo.get_records_by_date(advances_report_dt)
         if adv_df.empty:
             return []
 
@@ -175,12 +172,12 @@ class PerformanceLetterService:
         ]
 
         # Get all known branches from MIS
-        mis_df = _self.analytics_service.get_data(start_date=selected_date, end_date=selected_date)
+        mis_df = self.analytics_service.get_data(start_date=selected_date, end_date=selected_date)
         mis_row = mis_df[mis_df["DATE"].dt.date == selected_date]
         all_sols = [int(s) for s in mis_row["SOL"].unique() if int(s) != 3933]
 
         results = []
-        nil_config = _self.registry.get_nil_sanction_config()
+        nil_config = self.registry.get_nil_sanction_config()
         
         for sol in all_sols:
             nil_params = []
@@ -215,21 +212,19 @@ class PerformanceLetterService:
 
         return results
 
-    @st.cache_data(show_spinner=False)
-    def get_budget_communication_data(_self, selected_date: datetime.date) -> List[Dict[str, Any]]:
+    def get_budget_communication_data(self, selected_date: datetime.date) -> List[Dict[str, Any]]:
         """Collects annual targets and historical performance for budget communication."""
         from src.core.utils.financial_year import get_fy_start
         fy_start = get_fy_start(selected_date)
         fy_range = f"{fy_start.year}-{str(fy_start.year+1)[2:]}"
         prev_fy_end_date = (fy_start - datetime.timedelta(days=1))
 
-        df = _self.analytics_service.get_data(start_date=prev_fy_end_date, end_date=selected_date)
+        df = self.analytics_service.get_data(start_date=prev_fy_end_date, end_date=selected_date)
         if df.empty: return []
         
         # Get branch names from Master Repository
         master_svc = MasterService()
-        units = master_svc.repo.get_by_category("UNIT")
-        unit_map = {int(u.code): u.name_en for u in units if u.code.isdigit()}
+        unit_map = {int(u.code): u.name_en for u in master_svc.repo.get_by_category("UNIT") if u.code.isdigit()}
         
         # Get all branches from latest record
         latest_date = df["DATE"].max()
@@ -244,7 +239,7 @@ class PerformanceLetterService:
             })
         
         # Get all params metadata
-        all_params = _self.registry.get_all_params()
+        all_params = self.registry.get_all_params()
         
         # Fetch Prev FY End figures for all branches
         prev_fy_df = df[df["DATE"].dt.date == prev_fy_end_date]

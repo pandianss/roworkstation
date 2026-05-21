@@ -1,4 +1,7 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const isServer = typeof window === "undefined";
+const API_BASE = isServer
+  ? (process.env.API_URL || "http://localhost:8000")
+  : (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000");
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -72,6 +75,15 @@ export interface Campaign {
   branch_targets?: Record<string, number>;
 }
 
+export interface UserProfile {
+  username: string;
+  name: string;
+  role: "ADMIN" | "USER" | "GUEST";
+  portal: "ro" | "branch" | "guest";
+  assigned_branches: string[];
+  dept: string;
+}
+
 // ── Fetch Helpers ──────────────────────────────────────────────────────────
 
 async function apiFetch<T>(path: string): Promise<T> {
@@ -130,4 +142,20 @@ export function formatIndian(value: number, decimals = 2): string {
 /** Format a raw backend value (in lakhs) as "₹ X.XX Cr" */
 export function formatCrore(val: number): string {
   return `₹ ${formatIndian(val)} Cr`;
+}
+
+/** Resolve the current OS user → portal assignment from the backend. */
+export async function getMe(): Promise<UserProfile> {
+  try {
+    return await apiFetch<UserProfile>("/api/auth/me");
+  } catch {
+    return {
+      username: "guest",
+      name: "Guest",
+      role: "GUEST",
+      portal: "guest",
+      assigned_branches: [],
+      dept: "ALL",
+    };
+  }
 }

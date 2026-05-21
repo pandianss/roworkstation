@@ -54,3 +54,15 @@ def get_departments():
         return {"departments": _safe_serialize(df)}
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
+
+
+@router.get("/staff")
+def get_staff():
+    """Return the full staff roster from master data."""
+    try:
+        df = _data_svc.get_staff_frame()
+        if df.empty:
+            return {"staff": []}
+        return {"staff": _safe_serialize(df)}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))

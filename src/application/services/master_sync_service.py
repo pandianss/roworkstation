@@ -72,7 +72,13 @@ class MasterSyncService:
                 seed_df[s_roll_col] = seed_df[s_roll_col].apply(lambda x: str(int(float(x))).lstrip('0') if pd.notna(x) else "")
                 seed_df = seed_df.set_index(s_roll_col)
         
-        staff_records = {str(r.code).lstrip('0'): r for r in self.repo.get_by_category("STAFF")}
+        staff_records = {}
+        for r in self.repo.get_by_category("STAFF"):
+            try:
+                code_clean = str(int(float(str(r.code).strip()))).lstrip('0')
+            except ValueError:
+                code_clean = str(r.code).strip().lstrip('0')
+            staff_records[code_clean] = r
         unit_records = {str(u.code).zfill(4): u for u in self.repo.get_by_category("UNIT")}
         
         to_save_staff = []
@@ -170,7 +176,7 @@ class MasterSyncService:
                     to_save_staff.append(staff)
                 else:
                     new_staff = MasterRecord(
-                        category="STAFF", code=str(raw_roll).strip(), 
+                        category="STAFF", code=match_key, 
                         name_en=name_en, name_hi=name_hi, name_local=name_ta,
                         is_active=True,
                         metadata={

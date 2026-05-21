@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import datetime
+import logging
 import shutil
 
 import numpy as np
 import pandas as pd
-import streamlit as st
+
+logger = logging.getLogger(__name__)
 
 from src.core.config.config_loader import get_app_settings
 from src.core.paths import project_path
@@ -28,6 +30,7 @@ class MISAnalyticsService:
         self.budget_repo = BudgetRepository()
         from src.core.registry.parameter_service import ParameterRegistry
         self.registry = ParameterRegistry()
+        self._needs_ingest = True
 
     def sync_database(self, progress_callback: callable | None = None) -> list[dict]:
         """Explicitly triggers synchronization of database with any new MIS Excel files."""
@@ -71,8 +74,6 @@ class MISAnalyticsService:
             
             shutil.move(str(file_path), str(self.archive_dir / file_path.name))
         
-        # Clear cache after ingestion
-        self.load_frame.clear()
         return summaries
 
     def delete_mis_file(self, filename: str) -> bool:
@@ -93,7 +94,7 @@ class MISAnalyticsService:
                     )
                     dates_to_clean = frame["DATE"].dropna().dt.date.unique().tolist()
             except Exception as e:
-                st.error(f"Error reading file before deletion: {e}")
+                logger.error(f"Error reading file before deletion: {e}")
 
         # 2. Delete DB records for those dates
         if dates_to_clean:
@@ -112,8 +113,6 @@ class MISAnalyticsService:
         # 4. Remove from DB tracking (IngestedFileModel)
         success = self.repository.delete_ingested_file(filename)
         
-        # Clear cache to reflect changes
-        self.load_frame.clear()
         return success
 
     def delete_records_by_date(self, target_date: datetime.date) -> tuple[int, int]:
@@ -123,7 +122,6 @@ class MISAnalyticsService:
             m_cnt = session.query(MilestoneAchievementModel).filter(MilestoneAchievementModel.date == target_date).delete(synchronize_session=False)
             session.commit()
             
-        self.load_frame.clear()
         return r_cnt, m_cnt
 
     def save_milestone_achievements(self, achievements: list[dict]) -> int:
@@ -138,20 +136,17 @@ class MISAnalyticsService:
     def get_available_sols(self) -> list:
         return self.repository.get_available_sols()
 
-    @st.cache_data(show_spinner=True)
-    def load_frame(_self, start_date=None, end_date=None) -> pd.DataFrame:
-        """Cached data loading and enrichment."""
-        frame = _self.repository.load_frame(start_date, end_date)
+    def load_frame(self, start_date=None, end_date=None) -> pd.DataFrame:
+        """Data loading and enrichment."""
+        frame = self.repository.load_frame(start_date, end_date)
         if frame.empty:
             return frame
         frame.columns = [column.upper().replace("_", " ") for column in frame.columns]
         frame["DATE"] = pd.to_datetime(frame["DATE"])
-        frame = _self._enrich_metrics(frame)
+        frame = self._enrich_metrics(frame)
         
         # Exclude Regional Office SOL (3933) at the cache layer as it contains 
         # aggregate figures and would cause double-counting.
-        # Filtering it here prevents Streamlit from creating a deep copy of the DataFrame
-        # for every single user session.
         if "SOL" in frame.columns:
             frame = frame[frame["SOL"] != 3933]
             
@@ -159,11 +154,11 @@ class MISAnalyticsService:
 
     def get_data(self, force_ingest: bool = False, start_date=None, end_date=None) -> pd.DataFrame:
         """Main entry point for UI, handles ingestion before loading."""
-        if force_ingest or st.session_state.get("mis_needs_ingest", True):
+        if force_ingest or getattr(self, "_needs_ingest", True):
             mis_dir = getattr(self, "mis_dir", None)
             if mis_dir is not None and any(mis_dir.glob("*.xlsx")):
                 self._ingest_new_files()
-            st.session_state["mis_needs_ingest"] = False
+            self._needs_ingest = False
             
         return self.load_frame(start_date, end_date)
 
@@ -199,21 +194,20 @@ class MISAnalyticsService:
         frame["NPA %"] = np.where(frame["ADV"] > 0, npa / frame["ADV"] * 100, 0).round(2)
         return frame
 
-    @st.cache_resource(show_spinner=False, ttl=3600)
-    def build_snapshot(_self, filters_dict: dict | MISFilter | None) -> MISSnapshot | None:
-        """Cached snapshot builder accepting either a MISFilter model or a cache-friendly dict."""
+    def build_snapshot(self, filters_dict: dict | MISFilter | None) -> MISSnapshot | None:
+        """Snapshot builder accepting either a MISFilter model or a cache-friendly dict."""
         if isinstance(filters_dict, MISFilter):
             filters_dict = filters_dict.model_dump()
 
         selected_date = filters_dict.get("selected_date") if filters_dict else None
         if not selected_date:
-            avail = _self.get_available_dates()
+            avail = self.get_available_dates()
             selected_date = avail[-1] if avail else datetime.date.today()
             
         fy_start = get_fy_start(selected_date)
         start_date = fy_start - datetime.timedelta(days=366)
 
-        frame = _self.get_data(start_date=start_date, end_date=selected_date)
+        frame = self.get_data(start_date=start_date, end_date=selected_date)
         if frame.empty:
             return None
         frame = frame.copy()
@@ -270,11 +264,10 @@ class MISAnalyticsService:
             milestone_breakthroughs=milestone_breakthroughs
         )
 
-    @st.cache_data(show_spinner=False)
-    def get_performance_metrics(_self, selected_date: datetime.date, metric_name: str = "ADV", sols: list[int] | None = None) -> dict:
+    def get_performance_metrics(self, selected_date: datetime.date, metric_name: str = "ADV", sols: list[int] | None = None) -> dict:
         fy_start = get_fy_start(selected_date)
         start_date = fy_start - datetime.timedelta(days=366)
-        frame = _self.get_data(start_date=start_date, end_date=selected_date)
+        frame = self.get_data(start_date=start_date, end_date=selected_date)
         if frame.empty:
             return {}
 
@@ -313,12 +306,12 @@ class MISAnalyticsService:
         next_month_date = get_next_month_end(selected_date)
         next_month_str = next_month_date.strftime("%Y-%m")
 
-        target_curr_month = _self.budget_repo.get_target(metric_name, curr_month_str, sols=sols)
-        target_next_month = _self.budget_repo.get_target(metric_name, next_month_str, sols=sols)
+        target_curr_month = self.budget_repo.get_target(metric_name, curr_month_str, sols=sols)
+        target_next_month = self.budget_repo.get_target(metric_name, next_month_str, sols=sols)
         
         fy_end = get_fy_end(selected_date)
         fy_end_str = fy_end.strftime("%Y-%m")
-        target_fy = _self.budget_repo.get_target(metric_name, fy_end_str, sols=sols)
+        target_fy = self.budget_repo.get_target(metric_name, fy_end_str, sols=sols)
 
         return {
             "current_actual": current_val,
