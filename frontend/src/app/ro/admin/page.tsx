@@ -8,7 +8,6 @@ import styles from "@/styles/components.module.css";
 import type { UserProfile } from "@/lib/api";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-const ADMIN_KEY = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -63,14 +62,28 @@ async function adminFetch(
   path: string,
   opts: RequestInit = {}
 ): Promise<Response> {
+  const pwd = typeof window !== "undefined" ? sessionStorage.getItem("ro_admin_password") || "" : "";
   return fetch(`${API_BASE}${path}`, {
     ...opts,
     headers: {
       "Content-Type": "application/json",
-      "X-Admin-Password": ADMIN_KEY,
+      "X-Admin-Password": pwd,
       ...(opts.headers || {}),
     },
   });
+}
+
+async function verifyAdminPassword(password: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/stats`, {
+      headers: {
+        "X-Admin-Password": password,
+      },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
@@ -246,6 +259,12 @@ export default function AdminPage() {
   const [tab, setTab] = useState<Tab>("overview");
   const [user, setUser] = useState<UserProfile | null>(null);
 
+  // authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState(false);
+
   // overview
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
@@ -276,6 +295,22 @@ export default function AdminPage() {
       .catch(() => null);
   }, []);
 
+  useEffect(() => {
+    const stored = sessionStorage.getItem("ro_admin_password");
+    if (stored) {
+      verifyAdminPassword(stored).then((isValid) => {
+        if (isValid) {
+          setIsAuthenticated(true);
+        } else {
+          sessionStorage.removeItem("ro_admin_password");
+          setIsAuthenticated(false);
+        }
+      });
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
+
   const loadStats = useCallback(async () => {
     setStatsLoading(true);
     try {
@@ -289,8 +324,12 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    Promise.resolve().then(() => loadStats());
-  }, [loadStats]);
+    Promise.resolve().then(() => {
+      if (isAuthenticated === true) {
+        loadStats();
+      }
+    });
+  }, [loadStats, isAuthenticated]);
 
   const loadMisFiles = useCallback(async () => {
     setMisLoading(true);
@@ -306,9 +345,9 @@ export default function AdminPage() {
 
   useEffect(() => {
     Promise.resolve().then(() => {
-      if (tab === "mis") loadMisFiles();
+      if (tab === "mis" && isAuthenticated === true) loadMisFiles();
     });
-  }, [tab, loadMisFiles]);
+  }, [tab, loadMisFiles, isAuthenticated]);
 
   const loadStaff = useCallback(async () => {
     setStaffLoading(true);
@@ -327,9 +366,9 @@ export default function AdminPage() {
 
   useEffect(() => {
     Promise.resolve().then(() => {
-      if (tab === "staff") loadStaff();
+      if (tab === "staff" && isAuthenticated === true) loadStaff();
     });
-  }, [tab, loadStaff]);
+  }, [tab, loadStaff, isAuthenticated]);
 
   const loadUsers = useCallback(async () => {
     setUsersLoading(true);
@@ -348,9 +387,10 @@ export default function AdminPage() {
 
   useEffect(() => {
     Promise.resolve().then(() => {
-      if (tab === "users") loadUsers();
+      if (tab === "users" && isAuthenticated === true) loadUsers();
     });
-  }, [tab, loadUsers]);
+  }, [tab, loadUsers, isAuthenticated]);
+
 
   // ── Actions ──────────────────────────────────────────────────────────────
 
@@ -430,7 +470,140 @@ export default function AdminPage() {
     { id: "users",    label: "Users & Access", icon: "🔐" },
   ];
 
+  // ── Password Submit Action ──────────────────────────────────────────────────
+  async function handlePasswordSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setVerifying(true);
+    setAuthError(null);
+    const success = await verifyAdminPassword(passwordInput);
+    if (success) {
+      sessionStorage.setItem("ro_admin_password", passwordInput);
+      setIsAuthenticated(true);
+    } else {
+      setAuthError("Incorrect administrator password. Please try again.");
+    }
+    setVerifying(false);
+  }
+
   // ── Render ────────────────────────────────────────────────────────────────
+  if (isAuthenticated === null) {
+    return (
+      <>
+        <title>Admin Console | RO Workstation</title>
+        <NavBar activePage="ro" user={user ?? undefined} />
+        <main className="container" style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ textAlign: "center" }}>
+            <span className="spin" style={{ fontSize: "2.4rem", color: "var(--color-primary-light)", marginBottom: "1rem" }}>⟳</span>
+            <div style={{ color: "var(--color-text-muted)", fontSize: "0.95rem", marginTop: "1rem" }}>Verifying access...</div>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  if (isAuthenticated === false) {
+    return (
+      <>
+        <title>Admin Console Login | RO Workstation</title>
+        <NavBar activePage="ro" user={user ?? undefined} />
+        <main className="container" style={{ minHeight: "75vh", display: "flex", alignItems: "center", justifyContent: "center", paddingTop: "2rem", paddingBottom: "4rem" }}>
+          <div
+            className="card animate-fade-up"
+            style={{
+              width: "100%",
+              maxWidth: "460px",
+              padding: "2.5rem",
+              background: "var(--gradient-card)",
+              borderRadius: "var(--radius-lg)",
+              border: "1px solid var(--color-border-subtle)",
+              boxShadow: "var(--shadow-lg), var(--shadow-glow)",
+            }}
+          >
+            <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+              <div
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  borderRadius: "var(--radius-md)",
+                  background: "hsla(257, 70%, 65%, 0.12)",
+                  border: "1px solid hsla(257, 70%, 65%, 0.25)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "1.8rem",
+                  margin: "0 auto 1.25rem",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.1)",
+                }}
+              >
+                🔐
+              </div>
+              <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--color-text)", marginBottom: "0.5rem" }}>
+                Admin Console Access
+              </h2>
+              <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", lineHeight: 1.5 }}>
+                This area contains sensitive master data and system sync operations. Enter the administrator password to unlock.
+              </p>
+            </div>
+
+            <form onSubmit={handlePasswordSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel} htmlFor="admin-password">
+                  Administrator Password
+                </label>
+                <input
+                  id="admin-password"
+                  type="password"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  placeholder="••••••••"
+                  className={styles.formInput}
+                  autoFocus
+                  style={{
+                    fontSize: "1rem",
+                    padding: "0.75rem 1rem",
+                    textAlign: "center",
+                    letterSpacing: passwordInput ? "0.3em" : "normal",
+                  }}
+                />
+              </div>
+
+              {authError && (
+                <div
+                  className={`${styles.alert} ${styles.alertError}`}
+                  style={{ fontSize: "0.825rem", display: "flex", alignItems: "center", gap: "0.5rem" }}
+                >
+                  ❌ {authError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={verifying || !passwordInput}
+                className={styles.btnPrimary}
+                style={{
+                  width: "100%",
+                  padding: "0.8rem",
+                  fontSize: "0.9rem",
+                  fontWeight: 700,
+                  opacity: (verifying || !passwordInput) ? 0.7 : 1,
+                  cursor: (verifying || !passwordInput) ? "not-allowed" : "pointer",
+                }}
+              >
+                {verifying ? (
+                  <>
+                    <span className="spin" style={{ marginRight: "0.5rem" }}>⟳</span> Verifying…
+                  </>
+                ) : (
+                  "Unlock Console"
+                )}
+              </button>
+            </form>
+          </div>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <title>Admin Console | RO Workstation</title>
@@ -456,8 +629,47 @@ export default function AdminPage() {
               background:
                 "linear-gradient(135deg, hsl(257,60%,18%) 0%, hsl(257,70%,38%) 100%)",
               marginBottom: "2rem",
+              position: "relative",
             }}
           >
+            {/* Lock Console Button */}
+            <button
+              onClick={() => {
+                sessionStorage.removeItem("ro_admin_password");
+                setIsAuthenticated(false);
+                setPasswordInput("");
+              }}
+              style={{
+                position: "absolute",
+                top: "1.5rem",
+                right: "1.5rem",
+                padding: "0.5rem 1rem",
+                background: "rgba(255, 255, 255, 0.08)",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                borderRadius: "var(--radius-md)",
+                color: "#fff",
+                fontWeight: 600,
+                fontSize: "0.8rem",
+                cursor: "pointer",
+                transition: "all var(--duration-fast) var(--ease-out)",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                zIndex: 10,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(255, 255, 255, 0.18)";
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.35)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+                e.currentTarget.style.transform = "none";
+              }}
+            >
+              🔒 Lock Console
+            </button>
             <div className={styles.heroBadge}>
               <span className={styles.heroDot} />
               System Administration
