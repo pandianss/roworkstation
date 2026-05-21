@@ -45,6 +45,19 @@ interface StaffMember {
   DOR?: string;
 }
 
+interface UnitRecord {
+  Code: string;
+  Name: string;
+  Type: string | null;
+  District: string | null;
+  "Population Group": string | null;
+  Head: string;
+  "2nd Line": string;
+  "Effective From": string | null;
+  "Open Date": string | null;
+  Active: boolean;
+}
+
 interface UserRecord {
   username: string;
   name: string;
@@ -253,7 +266,7 @@ function RoleBadge({ role }: { role: string }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 
-type Tab = "overview" | "mis" | "masters" | "staff" | "users";
+type Tab = "overview" | "mis" | "masters" | "staff" | "users" | "units";
 
 export default function AdminPage() {
   const [tab, setTab] = useState<Tab>("overview");
@@ -285,6 +298,11 @@ export default function AdminPage() {
   // users tab
   const [usersData, setUsersData] = useState<UserRecord[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
+
+  // units tab
+  const [units, setUnits] = useState<UnitRecord[]>([]);
+  const [unitsQuery, setUnitsQuery] = useState("");
+  const [unitsLoading, setUnitsLoading] = useState(false);
 
   // ── Effects ─────────────────────────────────────────────────────────────
 
@@ -391,6 +409,27 @@ export default function AdminPage() {
     });
   }, [tab, loadUsers, isAuthenticated]);
 
+  const loadUnits = useCallback(async () => {
+    setUnitsLoading(true);
+    try {
+      const r = await fetch(`${API_BASE}/api/master/units`);
+      if (r.ok) {
+        const d = await r.json();
+        setUnits(d.units || []);
+      }
+    } catch {
+      /* ignore */
+    } finally {
+      setUnitsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    Promise.resolve().then(() => {
+      if (tab === "units" && isAuthenticated === true) loadUnits();
+    });
+  }, [tab, loadUnits, isAuthenticated]);
+
 
   // ── Actions ──────────────────────────────────────────────────────────────
 
@@ -462,12 +501,28 @@ export default function AdminPage() {
     );
   });
 
+  // ── Filtered units ────────────────────────────────────────────────────────
+  const filteredUnits = units.filter((u) => {
+    const q = unitsQuery.toLowerCase();
+    return (
+      !q ||
+      u.Code?.toLowerCase().includes(q) ||
+      u.Name?.toLowerCase().includes(q) ||
+      u.Type?.toLowerCase().includes(q) ||
+      u.District?.toLowerCase().includes(q) ||
+      u["Population Group"]?.toLowerCase().includes(q) ||
+      u.Head?.toLowerCase().includes(q) ||
+      u["2nd Line"]?.toLowerCase().includes(q)
+    );
+  });
+
   const TABS: { id: Tab; label: string; icon: string }[] = [
     { id: "overview", label: "Overview", icon: "📊" },
     { id: "mis",      label: "MIS Ingestion", icon: "📥" },
     { id: "masters",  label: "Master Sync", icon: "🔄" },
     { id: "staff",    label: "Staff Roster", icon: "👥" },
     { id: "users",    label: "Users & Access", icon: "🔐" },
+    { id: "units",    label: "Units Master", icon: "🏦" },
   ];
 
   // ── Password Submit Action ──────────────────────────────────────────────────
@@ -740,6 +795,7 @@ export default function AdminPage() {
                       { label: "→ MIS Ingestion", t: "mis" as Tab },
                       { label: "→ Master Sync", t: "masters" as Tab },
                       { label: "→ Staff Roster", t: "staff" as Tab },
+                      { label: "→ Units Master", t: "units" as Tab },
                       { label: "→ Users & Access", t: "users" as Tab },
                     ].map((a) => (
                       <button
@@ -1194,6 +1250,97 @@ export default function AdminPage() {
                   </table>
                 </div>
               </>
+            )}
+          </>
+        )}
+
+        {/* ══════════════════════════════════════════════════════════════
+            TAB: UNITS MASTER
+        ══════════════════════════════════════════════════════════════ */}
+        {tab === "units" && (
+          <>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1.5rem",
+                flexWrap: "wrap",
+                gap: "1rem",
+              }}
+            >
+              <h2 style={{ margin: 0 }}>🏦 Units Master</h2>
+              {units.length > 0 && (
+                <span className="badge badge--blue">{units.length} units</span>
+              )}
+            </div>
+
+            <div className={styles.searchWrapper} style={{ marginBottom: "1.25rem" }}>
+              <span className={styles.searchIcon}>🔍</span>
+              <input
+                type="text"
+                placeholder="Search by code, name, type, district or population group…"
+                value={unitsQuery}
+                onChange={(e) => setUnitsQuery(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
+
+            {unitsLoading ? (
+              <div className={styles.emptyState}><span className="spin">⟳</span> Loading units…</div>
+            ) : filteredUnits.length === 0 ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}>🏦</div>
+                <span>{unitsQuery ? "No units match your search." : "No unit data. Run a unit sync first."}</span>
+              </div>
+            ) : (
+              <div className="card" style={{ overflow: "hidden" }}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Code</th>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>District</th>
+                      <th>Population Group</th>
+                      <th>Head Officer</th>
+                      <th>2nd Line</th>
+                      <th>Open Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUnits.map((u) => (
+                      <tr key={u.Code}>
+                        <td style={{ fontFamily: "var(--font-mono)", fontSize: "0.78rem" }}>
+                          {u.Code}
+                        </td>
+                        <td style={{ color: "var(--color-text)", fontWeight: 600 }}>
+                          {u.Name}
+                        </td>
+                        <td>{u.Type || "—"}</td>
+                        <td>{u.District || "—"}</td>
+                        <td>
+                          <span style={{ fontSize: "0.75rem", color: "var(--color-primary-light)" }}>
+                            {u["Population Group"] || "—"}
+                          </span>
+                        </td>
+                        <td>{u.Head || "—"}</td>
+                        <td>{u["2nd Line"] || "—"}</td>
+                        <td style={{ fontSize: "0.75rem" }}>{u["Open Date"] || "—"}</td>
+                        <td>
+                          <span
+                            className={`badge ${u.Active ? "badge--green" : "badge--red"}`}
+                            style={{ fontSize: "0.65rem" }}
+                          >
+                            {u.Active ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </>
         )}
