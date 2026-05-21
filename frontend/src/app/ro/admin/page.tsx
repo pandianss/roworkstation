@@ -305,7 +305,7 @@ export default function AdminPage() {
   const [unitsLoading, setUnitsLoading] = useState(false);
 
   // mis upload states
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadFiles, setUploadFiles] = useState<File[]>([]);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadResult, setUploadResult] = useState<string | null>(null);
@@ -462,35 +462,52 @@ export default function AdminPage() {
 
   async function handleUpload(e: React.FormEvent) {
     e.preventDefault();
-    if (!uploadFile) return;
+    if (uploadFiles.length === 0) return;
     setUploadLoading(true);
     setUploadError(null);
     setUploadResult(null);
-    try {
-      const pwd = typeof window !== "undefined" ? sessionStorage.getItem("ro_admin_password") || "" : "";
-      const formData = new FormData();
-      formData.append("file", uploadFile);
 
-      const r = await fetch(`${API_BASE}/api/admin/mis/upload`, {
-        method: "POST",
-        headers: {
-          "X-Admin-Password": pwd,
-        },
-        body: formData,
-      });
-      const d = await r.json();
-      if (r.ok) {
-        setUploadResult(d.message || `Successfully uploaded ${uploadFile.name}`);
-        setUploadFile(null);
-        loadMisFiles();
-        loadStats();
-      } else {
-        setUploadError(d.detail || "Upload failed");
+    const pwd = typeof window !== "undefined" ? sessionStorage.getItem("ro_admin_password") || "" : "";
+    const successes: string[] = [];
+    const failures: string[] = [];
+
+    for (let i = 0; i < uploadFiles.length; i++) {
+      const file = uploadFiles[i];
+      // Update result state to show current progress
+      setUploadResult(`Processing file ${i + 1} of ${uploadFiles.length}: ${file.name}...`);
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const r = await fetch(`${API_BASE}/api/admin/mis/upload`, {
+          method: "POST",
+          headers: {
+            "X-Admin-Password": pwd,
+          },
+          body: formData,
+        });
+        const d = await r.json();
+        if (r.ok) {
+          successes.push(file.name);
+        } else {
+          failures.push(`${file.name} (${d.detail || "Upload failed"})`);
+        }
+      } catch (err: unknown) {
+        failures.push(`${file.name} (${err instanceof Error ? err.message : "Network error"})`);
       }
-    } catch (e: unknown) {
-      setUploadError(e instanceof Error ? e.message : "Network error");
-    } finally {
-      setUploadLoading(false);
+    }
+
+    setUploadLoading(false);
+    setUploadFiles([]);
+    loadMisFiles();
+    loadStats();
+
+    if (failures.length > 0) {
+      setUploadError(`Failed files: ${failures.join(", ")}`);
+    }
+    if (successes.length > 0) {
+      setUploadResult(`Successfully ingested ${successes.length} file(s): ${successes.join(", ")}`);
     }
   }
 
@@ -874,9 +891,9 @@ export default function AdminPage() {
           <>
             {/* File Picker / Upload Zone */}
             <div className="card" style={{ padding: "1.5rem", marginBottom: "1.5rem" }}>
-              <h3 style={{ marginBottom: "0.5rem" }}>Upload MIS Excel File</h3>
+              <h3 style={{ marginBottom: "0.5rem" }}>Upload MIS Excel Files</h3>
               <p style={{ fontSize: "0.85rem", marginBottom: "1.25rem" }}>
-                Select a local MIS Excel spreadsheet (`.xlsx`) to upload and ingest directly.
+                Select one or more local MIS Excel spreadsheets (`.xlsx`) to upload and ingest sequentially.
               </p>
               
               <form onSubmit={handleUpload}>
@@ -894,8 +911,8 @@ export default function AdminPage() {
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
                     e.preventDefault();
-                    if (e.dataTransfer.files?.[0]) {
-                      setUploadFile(e.dataTransfer.files[0]);
+                    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                      setUploadFiles(Array.from(e.dataTransfer.files));
                     }
                   }}
                   onClick={() => document.getElementById("mis-file-input")?.click()}
@@ -904,30 +921,56 @@ export default function AdminPage() {
                     id="mis-file-input"
                     type="file"
                     accept=".xlsx"
+                    multiple
                     onChange={(e) => {
-                      if (e.target.files?.[0]) {
-                        setUploadFile(e.target.files[0]);
+                      if (e.target.files) {
+                        setUploadFiles(Array.from(e.target.files));
                       }
                     }}
                     style={{ display: "none" }}
                   />
                   <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📁</div>
-                  {uploadFile ? (
+                  {uploadFiles.length > 0 ? (
                     <div>
-                      <div style={{ fontWeight: 600, color: "var(--color-text)" }}>
-                        {uploadFile.name}
+                      <div style={{ fontWeight: 700, color: "var(--color-primary-light)", fontSize: "1.05rem" }}>
+                        {uploadFiles.length} file(s) selected
                       </div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--color-text-faint)", marginTop: 4 }}>
-                        {(uploadFile.size / 1024 / 1024).toFixed(2)} MB
+                      <div 
+                        style={{ 
+                          maxHeight: "120px", 
+                          overflowY: "auto", 
+                          margin: "0.75rem auto 0", 
+                          maxWidth: "460px", 
+                          padding: "0.5rem 0.75rem", 
+                          background: "var(--color-surface-3)", 
+                          borderRadius: "var(--radius-sm)",
+                          border: "1px solid var(--color-border-subtle)",
+                          textAlign: "left"
+                        }}
+                        onClick={(e) => e.stopPropagation()} // Prevent clicking the file list from reopening the file dialog
+                      >
+                        {uploadFiles.map((file, idx) => (
+                          <div key={idx} style={{ fontSize: "0.78rem", display: "flex", justifyContent: "space-between", color: "var(--color-text-muted)", padding: "3px 0", borderBottom: idx < uploadFiles.length - 1 ? "1px solid rgba(255,255,255,0.03)" : "none" }}>
+                            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginRight: "1rem" }}>
+                              {idx + 1}. {file.name}
+                            </span>
+                            <span style={{ flexShrink: 0, opacity: 0.8 }}>
+                              {(file.size / 1024 / 1024).toFixed(2)} MB
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--color-text-faint)", marginTop: 8 }}>
+                        Total size: {(uploadFiles.reduce((acc, f) => acc + f.size, 0) / 1024 / 1024).toFixed(2)} MB (Click to replace selection)
                       </div>
                     </div>
                   ) : (
                     <div>
                       <div style={{ fontWeight: 600, color: "var(--color-text-muted)" }}>
-                        Drag & drop your Excel file here, or click to browse
+                        Drag & drop your Excel files here, or click to browse
                       </div>
                       <div style={{ fontSize: "0.75rem", color: "var(--color-text-faint)", marginTop: 4 }}>
-                        Supports only .xlsx spreadsheet formats
+                        Supports multiple .xlsx spreadsheets
                       </div>
                     </div>
                   )}
@@ -937,15 +980,18 @@ export default function AdminPage() {
                   <button
                     type="submit"
                     className={styles.btnPrimary}
-                    disabled={uploadLoading || !uploadFile}
-                    style={{ opacity: (uploadLoading || !uploadFile) ? 0.7 : 1 }}
+                    disabled={uploadLoading || uploadFiles.length === 0}
+                    style={{ opacity: (uploadLoading || uploadFiles.length === 0) ? 0.7 : 1 }}
                   >
-                    {uploadLoading ? "⟳ Uploading & Ingesting…" : "📤 Upload & Ingest"}
+                    {uploadLoading ? "⟳ Uploading & Ingesting…" : `📤 Upload & Ingest (${uploadFiles.length} file${uploadFiles.length !== 1 ? "s" : ""})`}
                   </button>
-                  {uploadFile && (
+                  {uploadFiles.length > 0 && (
                     <button
                       type="button"
-                      onClick={() => setUploadFile(null)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setUploadFiles([]);
+                      }}
                       style={{
                         padding: "0.6rem 1rem",
                         background: "rgba(255,255,255,0.05)",
